@@ -10,6 +10,7 @@ import {
   Warehouse, Car, UserCheck, Bell, Home, Menu, User, Shield, Heart,
   Package, Truck, CreditCard, Award, TrendingDown, Trash, FileSpreadsheet
 } from 'lucide-react' // Icon library for consistent UI elements
+import API_URL from '../config'
 
 // Main Buyer Dashboard Component - Provides comprehensive interface for crop buyers
 const BuyerDashboard = () => {
