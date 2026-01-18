@@ -86,7 +86,9 @@ const HomePage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-2"
             >
-              <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 rounded-lg object-contain" />
+              <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+                <Leaf className="w-6 h-6 text-white" />
+              </div>
               <span className="text-2xl font-bold text-gray-900">FarmConnect</span>
             </motion.div>
 

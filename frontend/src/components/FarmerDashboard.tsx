@@ -2241,228 +2241,235 @@ const FarmerDashboard = () => {
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <div className="flex items-center space-x-2">
-                <img src="/logo.png" alt="FarmConnect Logo" className="w-8 h-8 rounded-lg object-contain" />
-                <span className="text-xl font-bold text-gray-900">FarmConnect</span>
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+                <Leaf className="w-5 h-5 text-white" />
               </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-              </button>
-              <div className="relative group">
-                <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-primary-600" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-900">{user?.name || 'Farmer'}</span>
-                </div>
-
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <div className="py-2">
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
-                    </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Settings
-                    </button>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <span className="text-xl font-bold text-gray-900">FarmConnect</span>
             </div>
           </div>
-        </div>
-      </nav>
 
-      <div className="flex">
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } `}>
-          <div className="h-full flex flex-col">
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <nav className="mt-5 flex-1 px-2 space-y-1">
-                {[
-                  { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
-                  { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
-                  { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
-                  { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
-                  { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
-                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
-                  { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
-                      ? 'bg-primary-100 text-primary-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      } `}
-                  >
-                    <span className="mr-3">{item.icon}</span>
-                    {item.name}
+          <div className="flex items-center space-x-4">
+            <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            </button>
+            <div className="relative group">
+              <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100">
+                <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary-600" />
+                </div>
+                <span className="text-sm font-medium text-gray-900">{user?.name || 'Farmer'}</span>
+              </div>
+
+              {/* Dropdown Menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
                   </button>
-                ))}
-              </nav>
-            </div>
-
-            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
-              >
-                <LogOut className="w-5 h-5 mr-3" />
-                Sign Out
-              </button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </button>
+                  <div className="border-t border-gray-200 my-1"></div>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+    </div>
+      </nav >
 
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-4 sm:px-6 lg:px-8">
-            {renderContent()}
-          </main>
+  <div className="flex">
+    <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } `}>
+      <div className="h-full flex flex-col">
+        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+          <nav className="mt-5 flex-1 px-2 space-y-1">
+            {[
+              { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+              { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
+              { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
+              { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
+              { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
+              { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
+              { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
+                  ? 'bg-primary-100 text-primary-900'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  } `}
+              >
+                <span className="mr-3">{item.icon}</span>
+                {item.name}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
+          >
+            <LogOut className="w-5 h-5 mr-3" />
+            Sign Out
+          </button>
         </div>
       </div>
-
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* View Offers Modal */}
-      {viewOffersModal && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 shadow-2xl overflow-y-auto max-h-[80vh]"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Received Offers</h3>
-                <p className="text-gray-600">
-                  {selectedRequestForOffers ? `For: ${selectedRequestForOffers.type} (${selectedRequestForOffers.budget || 'No Budget'})` :
-                    selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity})` :
-                      'All Offers'}
-                </p>
-              </div>
-              <button onClick={() => setViewOffersModal(false)} className="text-gray-500 hover:text-gray-700">
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {currentOffers.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No offers received yet.</p>
-                </div>
-              ) : (
-                currentOffers.map((offer) => (
-                  <div key={offer._id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-semibold text-lg text-gray-900">{offer.buyerName || offer.buyer?.name || offer.provider?.name || offer.providerName || 'User'}</h4>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                          offer.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                          {offer.status.toUpperCase()}
-                        </span>
-                      </div>
-                      <p className="text-gray-600">Bid Amount: <span className="font-bold text-green-600">{offer.bidAmount}</span></p>
-                      {offer.quantityRequested && (
-                        <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested}</span></p>
-                      )}
-                      {offer.pricePerUnit && (
-                        <p className="text-sm text-gray-600">Price/Unit: <span className="font-semibold">₹{offer.pricePerUnit}</span></p>
-                      )}
-                      <p className="text-sm text-gray-500 mt-1">{new Date(offer.createdAt).toLocaleDateString()}</p>
-                    </div>
-
-                    <div className="flex flex-col space-y-2">
-                      {offer.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => handleAcceptOffer(offer)}
-                            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors"
-                          >
-                            Accept Bid
-                          </button>
-                          <button
-                            onClick={() => handleRejectOffer(offer._id)}
-                            className="border border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 px-4 rounded-lg transition-colors"
-                          >
-                            Reject Bid
-                          </button>
-                        </>
-                      )}
-                      {offer.status === 'accepted' && (
-                        <span className="text-green-600 font-bold flex items-center">
-                          Accepted ✅
-                        </span>
-                      )}
-                      {offer.status === 'rejected' && (
-                        <span className="text-red-600 font-bold flex items-center">
-                          Rejected ❌
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Sign Out Confirmation Modal */}
-      {showSignOutConfirm && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <LogOut className="w-8 h-8 text-red-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
-              <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
-
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => setShowSignOutConfirm(false)}
-                  className="flex-1 btn-outline py-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmSignOut}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </div>
+
+    <div className="flex-1 lg:ml-0">
+      <main className="py-6 px-4 sm:px-6 lg:px-8">
+        {renderContent()}
+      </main>
+    </div>
+  </div>
+
+{
+  sidebarOpen && (
+    <div
+      className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+      onClick={() => setSidebarOpen(false)}
+    />
+  )
+}
+
+{/* View Offers Modal */ }
+{
+  viewOffersModal && (
+    <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 shadow-2xl overflow-y-auto max-h-[80vh]"
+      >
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">Received Offers</h3>
+            <p className="text-gray-600">
+              {selectedRequestForOffers ? `For: ${selectedRequestForOffers.type} (${selectedRequestForOffers.budget || 'No Budget'})` :
+                selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity})` :
+                  'All Offers'}
+            </p>
+          </div>
+          <button onClick={() => setViewOffersModal(false)} className="text-gray-500 hover:text-gray-700">
+            ✕
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {currentOffers.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <p>No offers received yet.</p>
+            </div>
+          ) : (
+            currentOffers.map((offer) => (
+              <div key={offer._id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="font-semibold text-lg text-gray-900">{offer.buyerName || offer.buyer?.name || offer.provider?.name || offer.providerName || 'User'}</h4>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                      offer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                      {offer.status.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="text-gray-600">Bid Amount: <span className="font-bold text-green-600">{offer.bidAmount}</span></p>
+                  {offer.quantityRequested && (
+                    <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested}</span></p>
+                  )}
+                  {offer.pricePerUnit && (
+                    <p className="text-sm text-gray-600">Price/Unit: <span className="font-semibold">₹{offer.pricePerUnit}</span></p>
+                  )}
+                  <p className="text-sm text-gray-500 mt-1">{new Date(offer.createdAt).toLocaleDateString()}</p>
+                </div>
+
+                <div className="flex flex-col space-y-2">
+                  {offer.status === 'pending' && (
+                    <>
+                      <button
+                        onClick={() => handleAcceptOffer(offer)}
+                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors"
+                      >
+                        Accept Bid
+                      </button>
+                      <button
+                        onClick={() => handleRejectOffer(offer._id)}
+                        className="border border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 px-4 rounded-lg transition-colors"
+                      >
+                        Reject Bid
+                      </button>
+                    </>
+                  )}
+                  {offer.status === 'accepted' && (
+                    <span className="text-green-600 font-bold flex items-center">
+                      Accepted ✅
+                    </span>
+                  )}
+                  {offer.status === 'rejected' && (
+                    <span className="text-red-600 font-bold flex items-center">
+                      Rejected ❌
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+{/* Sign Out Confirmation Modal */ }
+{
+  showSignOutConfirm && (
+    <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogOut className="w-8 h-8 text-red-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
+          <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
+
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowSignOutConfirm(false)}
+              className="flex-1 btn-outline py-2"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmSignOut}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+    </div >
   )
 }
 

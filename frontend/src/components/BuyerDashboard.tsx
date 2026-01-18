@@ -8,7 +8,7 @@ import {
   TrendingUp, AlertCircle, CheckCircle, Clock, Star, Settings, LogOut, Plus,
   Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Crop,
   Warehouse, Car, UserCheck, Bell, Home, Menu, User, Shield, Heart,
-  Package, Truck, CreditCard, Award, TrendingDown, Trash, FileSpreadsheet
+  Package, Truck, CreditCard, Award, TrendingDown, Trash, FileSpreadsheet, Leaf
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 
@@ -1191,207 +1191,207 @@ const BuyerDashboard = () => {
               >
                 <Menu className="w-6 h-6" /> {/* Hamburger menu icon for mobile */}
               </button>
-              {/* Logo and brand name */}
-              <div className="flex items-center space-x-2">
-                <img src="/logo.png" alt="FarmConnect Logo" className="w-8 h-8 rounded-lg object-contain" />
-                <span className="text-xl font-bold text-gray-900">FarmConnect</span> {/* Brand name */}
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <Leaf className="w-5 h-5 text-white" />
               </div>
+              <span className="text-xl font-bold text-gray-900">FarmConnect</span> {/* Brand name */}
             </div>
+          </div>
 
-            {/* Right side - Notifications and user profile */}
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
-                <Bell className="w-5 h-5" /> {/* Notification bell icon */}
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span> {/* Notification indicator */}
-              </button>
-              {/* User profile section */}
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-orange-600" /> {/* User avatar icon */}
-                </div>
-                <span className="text-sm font-medium text-gray-900">{user?.name || 'Buyer'}</span> {/* User role/title */}
+          {/* Right side - Notifications and user profile */}
+          <div className="flex items-center space-x-4">
+            <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
+              <Bell className="w-5 h-5" /> {/* Notification bell icon */}
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span> {/* Notification indicator */}
+            </button>
+            {/* User profile section */}
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-orange-600" /> {/* User avatar icon */}
               </div>
+              <span className="text-sm font-medium text-gray-900">{user?.name || 'Buyer'}</span> {/* User role/title */}
             </div>
           </div>
         </div>
-      </nav>
+    </div>
+      </nav >
 
-      {/* Main layout container with sidebar and content */}
-      <div className="flex">
-        {/* Sidebar navigation - Fixed on mobile, sticky on desktop */}
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full' // Controls mobile sidebar visibility
-          }`}>
-          <div className="h-full flex flex-col">
-            {/* Navigation menu items */}
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <nav className="mt-5 flex-1 px-2 space-y-1">
-                {/* Navigation menu items array with icons and labels */}
-                {[
-                  { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
-                  { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
-                  { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
-                  { id: 'saved', name: 'Saved Items', icon: <Heart className="w-5 h-5" /> }, // Wishlist
-                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }, // Analytics
-                  { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> } // User profile
-                ].map((item) => ( // Maps through navigation items to create menu buttons
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
-                      ? 'bg-orange-100 text-orange-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                  >
-                    <span className="mr-3">{item.icon}</span>
-                    {item.name}
-                  </button>
-                ))}
-              </nav>
-            </div>
+  {/* Main layout container with sidebar and content */ }
+  < div className = "flex" >
+    {/* Sidebar navigation - Fixed on mobile, sticky on desktop */ }
+    < div className = {`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full' // Controls mobile sidebar visibility
+      }`}>
+        <div className="h-full flex flex-col">
+          {/* Navigation menu items */}
+          <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            <nav className="mt-5 flex-1 px-2 space-y-1">
+              {/* Navigation menu items array with icons and labels */}
+              {[
+                { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
+                { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
+                { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
+                { id: 'saved', name: 'Saved Items', icon: <Heart className="w-5 h-5" /> }, // Wishlist
+                { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }, // Analytics
+                { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> } // User profile
+              ].map((item) => ( // Maps through navigation items to create menu buttons
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
+                    ? 'bg-orange-100 text-orange-900'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  {item.name}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
-              >
-                <LogOut className="w-5 h-5 mr-3" />
-                Sign Out
-              </button>
-            </div>
+          <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+            <button
+              onClick={handleSignOut}
+              className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Sign Out
+            </button>
           </div>
         </div>
+        </div >
 
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-4 sm:px-6 lg:px-8">
-            {renderContent()}
-          </main>
-        </div>
+  <div className="flex-1 lg:ml-0">
+    <main className="py-6 px-4 sm:px-6 lg:px-8">
+      {renderContent()}
+    </main>
+  </div>
       </div >
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+  { sidebarOpen && (
+    <div
+      className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+      onClick={() => setSidebarOpen(false)}
+    />
+  )}
 
-      {/* Sign Out Confirmation Modal */}
-      {
-        showSignOutConfirm && (
-          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <LogOut className="w-8 h-8 text-red-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
-                <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
-
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setShowSignOutConfirm(false)}
-                    className="flex-1 btn-outline py-2"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={confirmSignOut}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+{/* Sign Out Confirmation Modal */ }
+{
+  showSignOutConfirm && (
+    <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogOut className="w-8 h-8 text-red-600" />
           </div>
-        )
-      }
-      {/* Bid Modal */}
-      {
-        isBidModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
+          <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
+
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowSignOutConfirm(false)}
+              className="flex-1 btn-outline py-2"
             >
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
-                <h2 className="text-xl font-bold flex items-center">
-                  <IndianRupee className="w-6 h-6 mr-2" />
-                  Place Bid for {selectedCrop?.name}
-                </h2>
-                <p className="text-orange-100 text-sm mt-1">Available: {selectedCrop?.quantity}</p>
-              </div>
-
-              <form onSubmit={handleSubmitBid} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Quantity Required (Numbers only)
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      required
-                      value={bidForm.quantityRequested}
-                      onChange={(e) => setBidForm({ ...bidForm, quantityRequested: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pl-10"
-                      placeholder="e.g. 50"
-                    />
-                    <Crop className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
-                    <span className="absolute right-3 top-2.5 text-gray-500 text-sm">kg</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Your Offer Price (per Unit)
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      required
-                      value={bidForm.pricePerUnit}
-                      onChange={(e) => setBidForm({ ...bidForm, pricePerUnit: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pl-10"
-                      placeholder="e.g. 20"
-                    />
-                    <IndianRupee className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
-                  </div>
-                </div>
-
-                {(bidForm.quantityRequested && bidForm.pricePerUnit) && (
-                  <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 flex justify-between items-center">
-                    <span className="text-orange-800 font-medium">Total Bid Amount:</span>
-                    <span className="text-xl font-bold text-orange-600">
-                      ₹{(parseFloat(bidForm.quantityRequested) * parseFloat(bidForm.pricePerUnit)).toFixed(2)}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex space-x-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsBidModalOpen(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:opacity-90 font-medium shadow-md"
-                  >
-                    Submit Bid
-                  </button>
-                </div>
-              </form>
-            </motion.div>
+              Cancel
+            </button>
+            <button
+              onClick={confirmSignOut}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              Sign Out
+            </button>
           </div>
-        )
-      }
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+{/* Bid Modal */ }
+{
+  isBidModalOpen && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+      >
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
+          <h2 className="text-xl font-bold flex items-center">
+            <IndianRupee className="w-6 h-6 mr-2" />
+            Place Bid for {selectedCrop?.name}
+          </h2>
+          <p className="text-orange-100 text-sm mt-1">Available: {selectedCrop?.quantity}</p>
+        </div>
+
+        <form onSubmit={handleSubmitBid} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Quantity Required (Numbers only)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                required
+                value={bidForm.quantityRequested}
+                onChange={(e) => setBidForm({ ...bidForm, quantityRequested: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pl-10"
+                placeholder="e.g. 50"
+              />
+              <Crop className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+              <span className="absolute right-3 top-2.5 text-gray-500 text-sm">kg</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Your Offer Price (per Unit)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                required
+                value={bidForm.pricePerUnit}
+                onChange={(e) => setBidForm({ ...bidForm, pricePerUnit: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pl-10"
+                placeholder="e.g. 20"
+              />
+              <IndianRupee className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+            </div>
+          </div>
+
+          {(bidForm.quantityRequested && bidForm.pricePerUnit) && (
+            <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 flex justify-between items-center">
+              <span className="text-orange-800 font-medium">Total Bid Amount:</span>
+              <span className="text-xl font-bold text-orange-600">
+                ₹{(parseFloat(bidForm.quantityRequested) * parseFloat(bidForm.pricePerUnit)).toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          <div className="flex space-x-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setIsBidModalOpen(false)}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:opacity-90 font-medium shadow-md"
+            >
+              Submit Bid
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  )
+}
     </div >
   )
 }
