@@ -1,47 +1,47 @@
-
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const connectDB = require('./config/db');
 require('dotenv').config();
 
 const app = express();
 
 // Middleware
-// Middleware
 app.use(cors({
-    origin: '*', // Allow all origins for now to fix connection issues
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
-// Health Check Route
-app.get('/', (req, res) => {
-    res.send('FarmConnect Backend is Running!');
+// Request Logger (Critical for Vercel Debugging)
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
 });
 
-// Database Connection
-// Database Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/farmconnect';
+// Database Connection Middleware (Ensures DB is connected for every request)
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error("Database connection failed:", error);
+        res.status(500).json({ error: "Database connection failed" });
+    }
+});
 
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.error('MongoDB Connection Error:', err));
+// Health Check Route
+app.get('/', (req, res) => {
+    res.send('FarmConnect Backend is Running! (V2.0)');
+});
 
 // Routes
-const authRoutes = require('./routes/auth');
-const cropRoutes = require('./routes/crops');
-const serviceRequestRoutes = require('./routes/serviceRequests');
-const rentalRoutes = require('./routes/rentals');
-const offerRoutes = require('./routes/offers');
-const providerServiceRoutes = require('./routes/providerServices');
-
-app.use('/api/auth', authRoutes);
-app.use('/api/crops', cropRoutes);
-app.use('/api/service-requests', serviceRequestRoutes);
-app.use('/api/rentals', rentalRoutes);
-app.use('/api/offers', offerRoutes);
-app.use('/api/provider-services', providerServiceRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/crops', require('./routes/crops'));
+app.use('/api/service-requests', require('./routes/serviceRequests'));
+app.use('/api/rentals', require('./routes/rentals'));
+app.use('/api/offers', require('./routes/offers'));
+app.use('/api/provider-services', require('./routes/providerServices'));
 app.use('/api/users', require('./routes/users'));
 
 // Server listening logic for local dev vs Vercel
