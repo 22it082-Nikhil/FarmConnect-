@@ -98,7 +98,7 @@ const ServiceProviderDashboard = () => {
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/auth/update/${user._id}`, {
+      const res = await fetch(`${API_URL}/api/auth/update/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -121,7 +121,7 @@ const ServiceProviderDashboard = () => {
   const fetchJobs = async () => {
     try {
       // Fetch all service requests
-      const res = await fetch('http://127.0.0.1:5001/api/service-requests')
+      const res = await fetch(`${API_URL}/api/service-requests`)
       const data = await res.json()
       // Filter out completed ones
       setJobs(data.filter((j: any) => j.status !== 'completed'))
@@ -142,7 +142,7 @@ const ServiceProviderDashboard = () => {
     }
     try {
       console.log(`Fetching bids for providerId: ${user._id}`)
-      const res = await fetch(`http://127.0.0.1:5001/api/offers?providerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/offers?providerId=${user._id}`)
       if (res.ok) {
         const data = await res.json()
         console.log("Fetched bids:", data)
@@ -159,7 +159,7 @@ const ServiceProviderDashboard = () => {
   const fetchServices = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/provider-services?providerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/provider-services?providerId=${user._id}`)
       if (res.ok) {
         const data = await res.json()
         setMyServices(data)
@@ -172,7 +172,7 @@ const ServiceProviderDashboard = () => {
   // Fetch Market History (All Accepted Bids)
   const fetchMarketHistory = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5001/api/offers?status=accepted')
+      const res = await fetch(`${API_URL}/api/offers?status=accepted`)
       if (res.ok) {
         const data = await res.json()
         const serviceBids = data.filter((offer: any) => offer.offerType === 'service' || offer.serviceRequest)
@@ -210,11 +210,11 @@ const ServiceProviderDashboard = () => {
     }
 
     try {
-      let url = 'http://127.0.0.1:5001/api/provider-services'
+      let url = `${API_URL}/api/provider-services`
       let method = 'POST'
 
       if (editingService) {
-        url = `http://127.0.0.1:5001/api/provider-services/${editingService._id}`
+        let url = `${API_URL}/api/provider-services/${editingService._id}`
         method = 'PUT'
       }
 
@@ -280,7 +280,7 @@ const ServiceProviderDashboard = () => {
     if (!confirm('Are you sure you want to delete this service?')) return
 
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/provider-services/${serviceId}`, {
+      const res = await fetch(`${API_URL}/api/provider-services/${serviceId}`, {
         method: 'DELETE'
       })
       if (res.ok) {
@@ -323,7 +323,7 @@ const ServiceProviderDashboard = () => {
 
     try {
       console.log(`Submitting bid. Provider: ${user._id} (${user.name})`)
-      const offerRes = await fetch('http://127.0.0.1:5001/api/offers', {
+      const offerRes = await fetch(`${API_URL}/api/offers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -342,7 +342,7 @@ const ServiceProviderDashboard = () => {
 
         // If matched, complete the job immediately
         if (isMatch) {
-          await fetch(`http://127.0.0.1:5001/api/service-requests/${job._id}`, {
+          await fetch(`${API_URL}/api/service-requests/${job._id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'completed' })

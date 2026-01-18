@@ -94,7 +94,7 @@ const FarmerDashboard = () => {
 
   const fetchAvailableServices = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5001/api/provider-services')
+      const res = await fetch(`${API_URL}/api/provider-services`)
       if (res.ok) {
         const data = await res.json()
         setAvailableServices(data)
@@ -136,7 +136,7 @@ const FarmerDashboard = () => {
   const fetchCrops = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/crops?farmerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/crops?farmerId=${user._id}`)
       const data = await res.json()
       setCrops(data)
     } catch (err) {
@@ -148,7 +148,7 @@ const FarmerDashboard = () => {
   const fetchRequests = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/service-requests?farmerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/service-requests?farmerId=${user._id}`)
       const data = await res.json()
       setRequests(data)
     } catch (err) {
@@ -160,7 +160,7 @@ const FarmerDashboard = () => {
   const fetchRentals = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/rentals?farmerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/rentals?farmerId=${user._id}`)
       const data = await res.json()
       setRentals(data)
     } catch (err) {
@@ -246,8 +246,8 @@ const FarmerDashboard = () => {
     e.preventDefault()
     try {
       const url = currentCrop
-        ? `http://127.0.0.1:5001/api/crops/${currentCrop._id}`
-        : 'http://127.0.0.1:5001/api/crops'
+        ? `${API_URL}/api/crops/${currentCrop._id}`
+        : `${API_URL}/api/crops`
 
       const method = currentCrop ? 'PUT' : 'POST'
 
@@ -294,7 +294,7 @@ const FarmerDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this crop?')) return
 
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/crops/${id}`, {
+      const res = await fetch(`${API_URL}/api/crops/${id}`, {
         method: 'DELETE'
       })
 
@@ -310,7 +310,7 @@ const FarmerDashboard = () => {
     setSelectedRequestForOffers(request)
     setSelectedCropForOffers(null)
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/offers?farmerId=${user?._id}`)
+      const res = await fetch(`${API_URL}/api/offers?farmerId=${user?._id}`)
       const offers = await res.json()
 
       // Filter for this specific request and status != rejected
@@ -331,7 +331,7 @@ const FarmerDashboard = () => {
     setSelectedCropForOffers(crop)
     setSelectedRequestForOffers(null)
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/offers?farmerId=${user?._id}`)
+      const res = await fetch(`${API_URL}/api/offers?farmerId=${user?._id}`)
       const offers = await res.json()
 
       // Filter for this specific crop
@@ -351,7 +351,7 @@ const FarmerDashboard = () => {
   const handleAcceptOffer = async (offer: any) => {
     try {
       // 1. Update Offer to 'accepted'
-      const offerRes = await fetch(`http://127.0.0.1:5001/api/offers/${offer._id}`, {
+      const offerRes = await fetch(`${API_URL}/api/offers/${offer._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'accepted' })
@@ -365,7 +365,7 @@ const FarmerDashboard = () => {
           fetchCrops() // Refresh to see updated quantity/status
         } else {
           // For services, update service request status
-          const requestRes = await fetch(`http://127.0.0.1:5001/api/service-requests/${offer.serviceRequest._id || offer.serviceRequest}`, {
+          const requestRes = await fetch(`${API_URL}/api/service-requests/${offer.serviceRequest._id || offer.serviceRequest}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'completed' })
@@ -392,7 +392,7 @@ const FarmerDashboard = () => {
 
   const handleRejectOffer = async (offerId: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/offers/${offerId}`, {
+      const res = await fetch(`${API_URL}/api/offers/${offerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'rejected' })
@@ -429,8 +429,8 @@ const FarmerDashboard = () => {
     e.preventDefault()
     try {
       const url = currentRequest
-        ? `http://127.0.0.1:5001/api/service-requests/${currentRequest._id}`
-        : 'http://127.0.0.1:5001/api/service-requests'
+        ? `${API_URL}/api/service-requests/${currentRequest._id}`
+        : `${API_URL}/api/service-requests`
 
       const method = currentRequest ? 'PUT' : 'POST'
 
@@ -458,7 +458,7 @@ const FarmerDashboard = () => {
   const handleDeleteRequest = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this request?')) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/service-requests/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${API_URL}/api/service-requests/${id}`, { method: 'DELETE' })
       if (res.ok) fetchRequests()
     } catch (err) {
       console.error("Error deleting request", err)
@@ -493,8 +493,8 @@ const FarmerDashboard = () => {
     e.preventDefault()
     try {
       const url = currentRental
-        ? `http://127.0.0.1:5001/api/rentals/${currentRental._id}`
-        : 'http://127.0.0.1:5001/api/rentals'
+        ? `${API_URL}/api/rentals/${currentRental._id}`
+        : `${API_URL}/api/rentals`
 
       const method = currentRental ? 'PUT' : 'POST'
 
@@ -522,7 +522,7 @@ const FarmerDashboard = () => {
   const handleDeleteRental = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this rental listing?')) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/rentals/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${API_URL}/api/rentals/${id}`, { method: 'DELETE' })
       if (res.ok) fetchRentals()
     } catch (err) {
       console.error("Error deleting rental", err)
@@ -850,7 +850,7 @@ const FarmerDashboard = () => {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/auth/update/${user._id}`, {
+      const res = await fetch(`${API_URL}/api/auth/update/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -1124,7 +1124,7 @@ const FarmerDashboard = () => {
   const fetchOffers = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/offers?farmerId=${user._id}`)
+      const res = await fetch(`${API_URL}/api/offers?farmerId=${user._id}`)
       const data = await res.json()
       setOffers(data)
     } catch (err) {
@@ -1134,7 +1134,7 @@ const FarmerDashboard = () => {
 
   const handleOfferAction = async (offerId: string, status: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:5001/api/offers/${offerId}`, {
+      const res = await fetch(`${API_URL}/api/offers/${offerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
@@ -1168,7 +1168,7 @@ const FarmerDashboard = () => {
     }
 
     try {
-      const res = await fetch('http://127.0.0.1:5001/api/offers', {
+      const res = await fetch('${API_URL}/api/offers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dummyOffer)
