@@ -7,7 +7,7 @@ import {
   Truck, Users, ShoppingCart, BarChart3, Calendar, MapPin, IndianRupee,
   TrendingUp, TrendingDown, Shield, CheckCircle, Clock, Star, Settings, LogOut, Plus,
   Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Wrench, Menu, User,
-  Bell, Trash, UserCheck, Home, Briefcase, Award, Trash2, Leaf
+  Bell, Trash, UserCheck, Home, Briefcase, Award, Trash2
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 
@@ -1451,241 +1451,236 @@ const ServiceProviderDashboard = () => {
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold text-gray-900">FarmConnect</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">FarmConnect</span>
             </div>
-          </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-900">{user?.name || 'Service Provider'}</span>
-            </div>
-          </div>
-        </div>
-    </div>
-      </nav >
-
-  <div className="flex min-h-[calc(100vh-4rem)] print:hidden">
-    <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-      <div className="h-full flex flex-col">
-        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-          <nav className="mt-5 flex-1 px-2 space-y-1">
-            {[
-              { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
-              { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
-              { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
-              { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
-              { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> }, // New Tab
-              { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
-              { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-              >
-                <span className="mr-3">{item.icon}</span>
-                {item.name}
+            <div className="flex items-center space-x-4">
+              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
+                <Bell className="w-5 h-5" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </button>
-            ))}
-          </nav>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                <span className="text-sm font-medium text-gray-900">{user?.name || 'Service Provider'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="flex min-h-[calc(100vh-4rem)] print:hidden">
+        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}>
+          <div className="h-full flex flex-col">
+            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+              <nav className="mt-5 flex-1 px-2 space-y-1">
+                {[
+                  { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+                  { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
+                  { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
+                  { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
+                  { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> }, // New Tab
+                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
+                      ? 'bg-blue-100 text-blue-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                  >
+                    <span className="mr-3">{item.icon}</span>
+                    {item.name}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="flex-shrink-0 flex border-t border-gray-200 p-4 mt-auto">
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Sign Out
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="flex-shrink-0 flex border-t border-gray-200 p-4 mt-auto">
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Sign Out
-          </button>
+        <div className="flex-1 lg:ml-0">
+          <main className="py-6 px-4 sm:px-6 lg:px-8">
+            {renderContent()}
+          </main>
         </div>
       </div>
-    </div>
 
-    <div className="flex-1 lg:ml-0">
-      <main className="py-6 px-4 sm:px-6 lg:px-8">
-        {renderContent()}
-      </main>
-    </div>
-  </div>
-
-{
-  sidebarOpen && (
-    <div
-      className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-      onClick={() => setSidebarOpen(false)}
-    />
-  )
-}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
 
 
-{/* Add New Service Modal */ }
-{
-  isServiceModalOpen && (
-    <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-xl p-8 max-w-lg w-full mx-4 shadow-2xl overflow-y-auto max-h-[90vh]"
-      >
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold text-gray-900">{editingService ? 'Edit Service' : 'Add New Service'}</h3>
-          <button onClick={() => setIsServiceModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-            ✕
-          </button>
+      {/* Add New Service Modal */}
+      {isServiceModalOpen && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl p-8 max-w-lg w-full mx-4 shadow-2xl overflow-y-auto max-h-[90vh]"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">{editingService ? 'Edit Service' : 'Add New Service'}</h3>
+              <button onClick={() => setIsServiceModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleServiceSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Service Title</label>
+                <input
+                  type="text"
+                  value={serviceForm.title}
+                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
+                  placeholder="e.g. Premium Tractor Rental"
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <select
+                    value={serviceForm.type}
+                    onChange={(e) => setServiceForm({ ...serviceForm, type: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Vehicle">Vehicle</option>
+                    <option value="Manpower">Manpower</option>
+                    <option value="Equipment">Equipment</option>
+                    <option value="Storage">Storage</option>
+                    <option value="Processing">Processing</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Rate</label>
+                  <input
+                    type="text"
+                    value={serviceForm.rate}
+                    onChange={(e) => setServiceForm({ ...serviceForm, rate: e.target.value })}
+                    placeholder="e.g. ₹500/hr"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={serviceForm.description}
+                  onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
+                  placeholder="Describe your service..."
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
+                  <input
+                    type="tel"
+                    value={serviceForm.contactPhone}
+                    onChange={(e) => setServiceForm({ ...serviceForm, contactPhone: e.target.value })}
+                    placeholder="+91 98765 43210"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                  <select
+                    value={serviceForm.availability}
+                    onChange={(e) => setServiceForm({ ...serviceForm, availability: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Available">Available</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Weekend Only">Weekend Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsServiceModalOpen(false)}
+                  className="flex-1 btn-outline py-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 btn-primary py-2"
+                >
+                  {editingService ? 'Save Changes' : 'Add Service'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
         </div>
+      )}
 
-        <form onSubmit={handleServiceSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Service Title</label>
-            <input
-              type="text"
-              value={serviceForm.title}
-              onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
-              placeholder="e.g. Premium Tractor Rental"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <LogOut className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
+              <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select
-                value={serviceForm.type}
-                onChange={(e) => setServiceForm({ ...serviceForm, type: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Vehicle">Vehicle</option>
-                <option value="Manpower">Manpower</option>
-                <option value="Equipment">Equipment</option>
-                <option value="Storage">Storage</option>
-                <option value="Processing">Processing</option>
-              </select>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowSignOutConfirm(false)}
+                  className="flex-1 btn-outline py-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmSignOut}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rate</label>
-              <input
-                type="text"
-                value={serviceForm.rate}
-                onChange={(e) => setServiceForm({ ...serviceForm, rate: e.target.value })}
-                placeholder="e.g. ₹500/hr"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              value={serviceForm.description}
-              onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
-              placeholder="Describe your service..."
-              rows={3}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-              <input
-                type="tel"
-                value={serviceForm.contactPhone}
-                onChange={(e) => setServiceForm({ ...serviceForm, contactPhone: e.target.value })}
-                placeholder="+91 98765 43210"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
-              <select
-                value={serviceForm.availability}
-                onChange={(e) => setServiceForm({ ...serviceForm, availability: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Available">Available</option>
-                <option value="Busy">Busy</option>
-                <option value="Weekend Only">Weekend Only</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={() => setIsServiceModalOpen(false)}
-              className="flex-1 btn-outline py-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 btn-primary py-2"
-            >
-              {editingService ? 'Save Changes' : 'Add Service'}
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </div>
-  )
-}
-
-{/* Sign Out Confirmation Modal */ }
-{
-  showSignOutConfirm && (
-    <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
-      >
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <LogOut className="w-8 h-8 text-red-600" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
-          <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
-
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setShowSignOutConfirm(false)}
-              className="flex-1 btn-outline py-2"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={confirmSignOut}
-              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      )}
     </div>
-  )
-}
-    </div >
   )
 }
 
