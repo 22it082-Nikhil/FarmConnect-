@@ -7,8 +7,18 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// Middleware
+app.use(cors({
+    origin: '*', // Allow all origins for now to fix connection issues
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Health Check Route
+app.get('/', (req, res) => {
+    res.send('FarmConnect Backend is Running!');
+});
 
 // Database Connection
 // Database Connection
