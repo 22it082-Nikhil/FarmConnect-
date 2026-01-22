@@ -646,7 +646,8 @@ const ServiceProviderDashboard = () => {
         <p className="text-blue-100 text-lg">Transparency Report: See all accepted bids and winners.</p>
       </motion.div>
 
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+      {/* Desktop View - Table */}
+      <div className="hidden md:block bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -705,6 +706,55 @@ const ServiceProviderDashboard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile View - Cards */}
+      <div className="md:hidden space-y-4">
+        {marketHistory.length === 0 ? (
+          <div className="bg-white rounded-xl p-8 text-center text-gray-500 border border-gray-100 shadow-sm">
+            No accepted bids found in the history yet.
+          </div>
+        ) : (
+          marketHistory.map((bid) => (
+            <div key={bid._id} className="bg-white rounded-xl p-5 shadow-md border border-gray-100">
+              {/* Header: Service Type & Date */}
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-blue-100 text-blue-800 mb-1">
+                    {bid.serviceRequest?.type || bid.offerType}
+                  </span>
+                  <p className="text-xs text-gray-500 mt-1">{new Date(bid.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Winning Bid</p>
+                  <p className="text-lg font-bold text-green-600">{bid.bidAmount}</p>
+                </div>
+              </div>
+
+              <div className="border-t border-b border-gray-50 py-3 my-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Farmer:</span>
+                  <span className="font-medium text-gray-900">{bid.farmer?.name || 'Unknown Farmer'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Budget:</span>
+                  <span className="font-medium text-gray-600">{bid.serviceRequest?.budget || 'N/A'}</span>
+                </div>
+              </div>
+
+              {/* Footer: Winner */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-sm text-gray-500">Winner:</span>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-purple-700">{bid.provider?.name || bid.providerName || 'Service Provider'}</p>
+                  <p className="text-xs text-green-600 flex items-center justify-end gap-1">
+                    <CheckCircle className="w-3 h-3" /> Verified
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
