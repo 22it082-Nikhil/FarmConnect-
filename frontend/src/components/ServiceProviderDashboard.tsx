@@ -1491,7 +1491,7 @@ const ServiceProviderDashboard = () => {
       {renderPrintableReport()}
 
       {/* Main Dashboard UI (Hidden when printing) */}
-      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30 print:hidden">
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-0 md:space-x-4">
