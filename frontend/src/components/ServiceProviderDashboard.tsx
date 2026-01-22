@@ -1453,7 +1453,7 @@ const ServiceProviderDashboard = () => {
               </button>
               <div className="flex items-center -ml-3 md:ml-0">
                 <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
-                <span className="hidden sm:block text-xl md:text-2xl font-bold text-gray-900">FarmConnect</span>
+                <span className="text-lg md:text-2xl font-bold text-gray-900 tracking-tight">FarmConnect</span>
               </div>
             </div>
 
@@ -1466,7 +1466,7 @@ const ServiceProviderDashboard = () => {
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-900">{user?.name || 'Service Provider'}</span>
+                <span className="hidden md:block text-sm font-medium text-gray-900">{user?.name || 'Service Provider'}</span>
               </div>
             </div>
           </div>
