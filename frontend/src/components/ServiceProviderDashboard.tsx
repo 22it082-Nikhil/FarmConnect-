@@ -6,7 +6,7 @@ import {
   // Navigation and UI icons for service provider dashboard
   Truck, Users, BarChart3,
   TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
-  FileText, Download,
+  FileText, Download, Plus, Search, MapPin,
   Bell, Home, Menu, User,
   Briefcase, Wrench, IndianRupee, Trash2, Award
 } from 'lucide-react' // Icon library for consistent UI elements
