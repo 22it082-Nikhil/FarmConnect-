@@ -1,13 +1,14 @@
-
 // Import required libraries and components
 import { motion } from 'framer-motion' // For smooth animations and transitions
 import { useState, useEffect, useMemo } from 'react' // For managing component state
 import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons
-  BarChart3, Bell, CheckCircle, ChevronDown, Crop, FileText, Heart, Home, IndianRupee,
-  LogOut, Menu, Package, Search, Shield, ShoppingBag, User, X, Clock, MapPin, Truck, ChevronRight,
-  ShoppingCart, TrendingUp, Trash, UserCheck
+  ShoppingCart, Users, BarChart3, Calendar, MapPin, IndianRupee,
+  TrendingUp, AlertCircle, CheckCircle, Clock, Star, Settings, LogOut, Plus,
+  Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Crop,
+  Warehouse, Car, UserCheck, Bell, Home, Menu, User, Shield, Heart,
+  Package, Truck, CreditCard, Award, TrendingDown, Trash, FileSpreadsheet
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 
@@ -58,7 +59,7 @@ const BuyerDashboard = () => {
     if (!user?._id) return
 
     try {
-      const res = await fetch(`${API_URL} /api/auth / update / ${user._id} `, {
+      const res = await fetch(`${API_URL}/api/auth/update/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -96,7 +97,7 @@ const BuyerDashboard = () => {
   const fetchMyOrders = async () => {
     if (!user?._id) return
     try {
-      const response = await fetch(`${API_URL} /api/offers ? buyerId = ${user._id} `)
+      const response = await fetch(`${API_URL}/api/offers?buyerId=${user._id}`)
       if (response.ok) {
         const data = await response.json()
         setMyOrders(data)
@@ -114,7 +115,7 @@ const BuyerDashboard = () => {
       setUser(parsedUser)
       // Fetch data only after user is loaded
       if (parsedUser._id) {
-        fetch(`${API_URL} /api/offers ? buyerId = ${parsedUser._id} `)
+        fetch(`${API_URL}/api/offers?buyerId=${parsedUser._id}`)
           .then(res => res.json())
           .then(data => setMyOrders(data))
           .catch(err => console.error(err))
@@ -133,7 +134,7 @@ const BuyerDashboard = () => {
   const fetchSavedCrops = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`${API_URL} /api/users / ${user._id} `)
+      const res = await fetch(`${API_URL}/api/users/${user._id}`)
       if (res.ok) {
         const data = await res.json()
         setSavedCrops(data.savedCrops || [])
@@ -146,7 +147,7 @@ const BuyerDashboard = () => {
   const handleToggleSave = async (cropId: string) => {
     if (!user?._id) return
     try {
-      const res = await fetch(`${API_URL} /api/users / ${user._id}/toggle-save`, {
+      const res = await fetch(`${API_URL}/api/users/${user._id}/toggle-save`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cropId })
@@ -756,266 +757,266 @@ const BuyerDashboard = () => {
     </div>
   )
 
+  // Generate PDF Report for Buyer
   const generatePDFReport = () => {
-    window.print()
-  }
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return alert('Please allow popups to generate report')
 
-  // Renders the Reports section
-  const renderPrintableReport = () => {
-    // Calculate stats for the report
-    const acceptedOrders = myOrders.filter(o => o.status === 'accepted' || o.status === 'shipped' || o.status === 'delivered')
-    const totalSpent = acceptedOrders.reduce((sum, order) => {
-      const amount = parseFloat(order.bidAmount?.replace(/[^0-9.-]+/g, "") || "0")
-      return sum + amount
-    }, 0)
+    const totalSpent = myOrders
+      .filter(o => o.status === 'accepted' || o.status === 'shipped' || o.status === 'delivered')
+      .reduce((sum, order) => {
+        const amount = parseFloat(order.bidAmount?.replace(/[^0-9.-]+/g, "") || "0")
+        return sum + amount
+      }, 0)
 
-    return (
-      <div className="hidden print:block p-8 bg-white text-black font-serif max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="border-b-2 border-gray-800 pb-4 mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-bold uppercase tracking-wider text-gray-900">Purchase Report</h1>
-            <p className="text-gray-600 mt-1">Generated for {user?.name || 'Buyer'}</p>
+    const totalOrders = myOrders.length
+    const activeOrders = myOrders.filter(o => o.status !== 'completed' && o.status !== 'rejected').length
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Buyer Purchase Report - FarmConnect</title>
+        <style>
+          body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 40px; }
+          .header-section { border-bottom: 3px solid #f97316; padding-bottom: 20px; margin-bottom: 40px; }
+          .company-name { font-size: 28px; font-weight: bold; color: #c2410c; }
+          .report-title { font-size: 18px; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+          .meta-info { display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 14px; background: #fff7ed; padding: 20px; border-radius: 8px; }
+          .meta-block strong { display: block; margin-bottom: 5px; color: #111; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+          
+          .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 50px; }
+          .summary-box { background: white; border: 1px solid #e5e7eb; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+          .summary-val { font-size: 32px; font-weight: bold; color: #111; margin-bottom: 5px; }
+          .summary-lbl { font-size: 13px; color: #6b7280; text-transform: uppercase; font-weight: 500; }
+          .val-orange { color: #f97316; }
+          .val-green { color: #16a34a; }
+          
+          .section-title { font-size: 20px; font-weight: bold; color: #111; margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb; display: flex; align-items: center; }
+          .section-title::before { content: ''; display: block; width: 6px; height: 24px; background: #f97316; margin-right: 12px; border-radius: 3px; }
+          
+          table { w-full; border-collapse: collapse; margin-bottom: 30px; font-size: 14px; width: 100%; }
+          th { background: #fff7ed; padding: 12px 15px; text-align: left; font-weight: 600; color: #9a3412; border-bottom: 2px solid #fed7aa; text-transform: uppercase; font-size: 12px; }
+          td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #4b5563; }
+          tr:last-child td { border-bottom: none; }
+          tr:nth-child(even) { background-color: #fffaf5; }
+          
+          .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #9ca3af; font-size: 12px; }
+          
+          .status-pil { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+          .status-accepted { background: #dcfce7; color: #166534; }
+          .status-rejected { background: #fee2e2; color: #991b1b; }
+          .status-pending { background: #fef9c3; color: #854d0e; }
+        </style>
+      </head>
+      <body>
+        <div class="header-section">
+          <div class="company-name">FarmConnect Buyer Report</div>
+          <div class="report-title">Purchase History & Expense Analysis</div>
+        </div>
+
+        <div class="meta-info">
+          <div class="meta-block">
+            <strong>BUYER PROFILE</strong>
+            <div>Name: ${user?.name || 'Valued Buyer'}</div>
+            <div>ID: ${user?._id || 'N/A'}</div>
           </div>
-          <div className="text-right">
-            <p className="font-medium text-gray-500">Date Generated</p>
-            <p className="text-xl font-bold text-gray-900">{new Date().toLocaleDateString()}</p>
+          <div class="meta-block" style="text-align: right;">
+            <strong>REPORT GENERATION</strong>
+            <div>Date: ${new Date().toLocaleDateString()}</div>
+            <div>Time: ${new Date().toLocaleTimeString()}</div>
           </div>
         </div>
 
-        {/* Executive Summary */}
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 uppercase text-gray-800 border-l-4 border-orange-600 pl-3">Executive Summary</h2>
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100 text-left">
-                <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Metric</th>
-                <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Value</th>
-                <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Description</th>
+        <div class="summary-grid">
+          <div class="summary-box">
+            <div class="summary-val val-orange">₹${totalSpent.toLocaleString()}</div>
+            <div class="summary-lbl">Total Expenditure</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-val">${totalOrders}</div>
+            <div class="summary-lbl">Total Orders Placed</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-val val-green">${activeOrders}</div>
+            <div class="summary-lbl">Active Orders</div>
+          </div>
+        </div>
+
+        <div class="section-title">Order History</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Crop Name</th>
+              <th>Farmer</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${myOrders.length > 0 ? myOrders.map((order) => `
+              <tr>
+                <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                <td><strong>${order.crop?.name || 'Unknown'}</strong></td>
+                <td>${order.farmer?.name || 'Unknown Farmer'}</td>
+                <td>${order.quantityRequested} ${order.crop?.unit || 'units'}</td>
+                <td style="font-weight: bold;">${order.bidAmount}</td>
+                <td><span class="status-pil status-${order.status}">${order.status}</span></td>
+              </tr>
+            `).join('') : '<tr><td colspan="6" style="text-align:center; padding: 20px;">No orders found.</td></tr>'}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          Generated by FarmConnect Platform • ${new Date().getFullYear()}
+        </div>
+        <script>
+          window.onload = function() { window.print(); window.close(); }
+        </script>
+      </body>
+      </html>
+    `
+
+    printWindow.document.write(htmlContent)
+    printWindow.document.close()
+  }
+
+  // Renders the Reports section
+  const renderReports = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 text-white"
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Financial Reports 📊</h2>
+            <p className="text-orange-100 text-lg">Analyze your spending and order history</p>
+          </div>
+          <button
+            onClick={generatePDFReport}
+            className="bg-white text-orange-600 px-6 py-2 rounded-lg font-semibold hover:bg-orange-50 transition-colors inline-flex items-center"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Download PDF Report
+          </button>
+        </div>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p className="text-gray-500 text-sm font-medium uppercase">Total Spent</p>
+          <p className="text-3xl font-bold text-orange-600 mt-2">
+            ₹{myOrders
+              .filter(o => o.status === 'accepted' || o.status === 'shipped' || o.status === 'delivered')
+              .reduce((sum, order) => sum + parseFloat(order.bidAmount?.replace(/[^0-9.-]+/g, "") || "0"), 0)
+              .toLocaleString()}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">On accepted orders</p>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p className="text-gray-500 text-sm font-medium uppercase">Total Orders</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{myOrders.length}</p>
+          <p className="text-xs text-gray-400 mt-1">Lifetime order volume</p>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p className="text-gray-500 text-sm font-medium uppercase">Pending Approval</p>
+          <p className="text-3xl font-bold text-yellow-600 mt-2">
+            {myOrders.filter(o => o.status === 'pending').length}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">Waiting for farmer acceptance</p>
+        </div>
+      </div>
+
+      {/* Desktop View - Table */}
+      <div className="hidden md:block bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h3 className="font-semibold text-gray-900">Recent Transactions</h3>
+          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">{myOrders.length} Records</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+              <tr>
+                <th className="py-3 px-6">Date</th>
+                <th className="py-3 px-6">Crop</th>
+                <th className="py-3 px-6">Farmer</th>
+                <th className="py-3 px-6">Amount</th>
+                <th className="py-3 px-6">Status</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td className="border border-gray-300 p-3 font-medium">Total Expenditure</td>
-                <td className="border border-gray-300 p-3 font-bold text-orange-700 text-lg">₹{totalSpent.toLocaleString()}</td>
-                <td className="border border-gray-300 p-3 text-gray-600">Total amount spent on accepted orders</td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 p-3 font-medium">Total Orders</td>
-                <td className="border border-gray-300 p-3 text-lg">{myOrders.length}</td>
-                <td className="border border-gray-300 p-3 text-gray-600">Lifetime order volume</td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 p-3 font-medium">Active Orders</td>
-                <td className="border border-gray-300 p-3 text-lg">{myOrders.filter(o => ['pending', 'accepted', 'shipped'].includes(o.status)).length}</td>
-                <td className="border border-gray-300 p-3 text-gray-600">Orders currently in progress</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        {/* Transaction History Log */}
-        <section>
-          <h2 className="text-2xl font-bold mb-4 uppercase text-gray-800 border-l-4 border-orange-600 pl-3">Transaction History Log</h2>
-          {myOrders.length === 0 ? (
-            <p className="text-gray-500 italic border p-4">No transaction history found.</p>
-          ) : (
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100 text-left">
-                  <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Date</th>
-                  <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Crop</th>
-                  <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Farmer</th>
-                  <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Amount</th>
-                  <th className="border border-gray-300 p-3 text-sm font-bold text-gray-700 uppercase">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {myOrders.slice(0, 20).map((order, i) => (
-                  <tr key={i}>
-                    <td className="border border-gray-300 p-3 text-sm">{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td className="border border-gray-300 p-3 font-medium text-gray-900">{order.crop?.name || 'Unknown'}</td>
-                    <td className="border border-gray-300 p-3">{order.farmer?.name || 'Unknown'}</td>
-                    <td className="border border-gray-300 p-3 font-bold text-green-700">{order.bidAmount}</td>
-                    <td className="border border-gray-300 p-3">
-                      <span className={`px-2 py-1 text-xs font-bold uppercase rounded-full border ${order.status === 'accepted' ? 'border-green-500 text-green-700 bg-green-50' :
-                        order.status === 'rejected' ? 'border-red-500 text-red-700 bg-red-50' :
-                          'border-yellow-500 text-yellow-700 bg-yellow-50'
+            <tbody className="divide-y divide-gray-100">
+              {myOrders.length === 0 ? (
+                <tr><td colSpan={5} className="py-8 text-center text-gray-500">No transactions found.</td></tr>
+              ) : (
+                myOrders.slice(0, 10).map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-3 px-6">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="py-3 px-6 font-medium text-gray-900">{order.crop?.name || 'Unknown'}</td>
+                    <td className="py-3 px-6">{order.farmer?.name || 'Unknown'}</td>
+                    <td className="py-3 px-6 font-bold text-green-600">{order.bidAmount}</td>
+                    <td className="py-3 px-6">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                        order.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
                         }`}>
                         {order.status}
                       </span>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-          <div className="mt-8 pt-8 border-t border-gray-300 text-center text-sm text-gray-500">
-            <p>End of Report | Generated by FarmConnect Platform</p>
-          </div>
-        </section>
-      </div>
-    )
-  }
-
-  const renderReports = () => {
-    const acceptedOrders = myOrders.filter(o => o.status === 'accepted' || o.status === 'shipped' || o.status === 'delivered')
-    const pendingOrders = myOrders.filter(o => o.status === 'pending').length
-    const rejectedOrders = myOrders.filter(o => o.status === 'rejected').length
-
-    // Calculate total spent
-    const totalSpent = acceptedOrders.reduce((sum, order) => {
-      const amount = parseFloat(order.bidAmount?.replace(/[^0-9.-]+/g, "") || "0")
-      return sum + amount
-    }, 0)
-
-    const successRate = myOrders.length > 0 ? Math.round((acceptedOrders.length / myOrders.length) * 100) : 0
-
-    return (
-      <div className="space-y-6">
-        {/* Reports are now rendered globally via renderPrintableReport outside main layout */}
-
-        {/* Dashboard View (On Screen) */}
-        <div className="print:hidden space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0"
-          >
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Analytics Center 📊</h1>
-              <p className="text-orange-100 text-lg">Detailed financial insights and history</p>
-            </div>
-            <button
-              onClick={generatePDFReport}
-              className="bg-white text-orange-600 px-6 py-2 rounded-lg font-semibold hover:bg-orange-50 transition-colors inline-flex items-center"
-            >
-              <FileText className="w-5 h-5 mr-2" />
-              Download Report
-            </button>
-          </motion.div>
-
-          {/* Financial Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 uppercase">Total Spent</p>
-                  <h3 className="text-3xl font-bold text-orange-600 mt-2">
-                    ₹{totalSpent.toLocaleString()}
-                  </h3>
-                </div>
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <IndianRupee className="w-6 h-6 text-orange-600" />
-                </div>
-              </div>
-              <p className="text-xs text-gray-400 mt-4">On {acceptedOrders.length} accepted orders</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 uppercase">Total Orders</p>
-                  <h3 className="text-3xl font-bold text-gray-900 mt-2">{myOrders.length}</h3>
-                </div>
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Package className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-              <p className="text-xs text-gray-400 mt-4">Lifetime volume</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 uppercase">Success Rate</p>
-                  <h3 className="text-3xl font-bold text-green-600 mt-2">
-                    {successRate}%
-                  </h3>
-                </div>
-                <div className="p-3 bg-green-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
-                </div>
-              </div>
-              <p className="text-xs text-gray-400 mt-4">Orders accepted/completed</p>
-            </motion.div>
-          </div>
-
-          {/* Detailed Stats Grid */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Order Statistics</h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Order Distribution Chart (Visual) */}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-4">Distribution</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Accepted ({acceptedOrders.length})</span>
-                        <span className="font-medium">{Math.round((acceptedOrders.length / myOrders.length) * 100 || 0)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(acceptedOrders.length / myOrders.length) * 100}%` }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Pending ({pendingOrders})</span>
-                        <span className="font-medium">{Math.round((pendingOrders / myOrders.length) * 100 || 0)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2">
-                        <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${(pendingOrders / myOrders.length) * 100}%` }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Rejected ({rejectedOrders})</span>
-                        <span className="font-medium">{Math.round((rejectedOrders / myOrders.length) * 100 || 0)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2">
-                        <div className="bg-red-500 h-2 rounded-full" style={{ width: `${(rejectedOrders / myOrders.length) * 100}%` }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recent History Table (Compact Scrollable) */}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-4">Recent Transactions</h4>
-                  <div className="overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead>
-                        <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Crop</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {myOrders.slice(0, 5).map((order, i) => (
-                          <tr key={i}>
-                            <td className="px-3 py-2 text-sm text-gray-900">{order.crop?.name || 'Unknown'}</td>
-                            <td className="px-3 py-2 text-sm text-green-600 font-medium">{order.bidAmount}</td>
-                            <td className="px-3 py-2 text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
-                          </tr>
-                        ))}
-                        {myOrders.length === 0 && (
-                          <tr><td colSpan={3} className="px-3 py-4 text-center text-sm text-gray-500">No orders yet.</td></tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-    )
-  }
+
+      {/* Mobile View - Cards */}
+      <div className="md:hidden space-y-4">
+        <div className="flex justify-between items-center px-1">
+          <h3 className="font-semibold text-gray-900">Recent Transactions</h3>
+          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">{myOrders.length} Records</span>
+        </div>
+        {myOrders.length === 0 ? (
+          <div className="bg-white rounded-xl p-8 text-center text-gray-500 border border-gray-100 shadow-sm">
+            No transactions found.
+          </div>
+        ) : (
+          myOrders.slice(0, 10).map((order) => (
+            <div key={order._id} className="bg-white rounded-xl p-5 shadow-md border border-gray-100">
+              {/* Header: Crop & Date */}
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h4 className="font-bold text-gray-900">{order.crop?.name || 'Unknown Crop'}</h4>
+                  <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${order.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                  order.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                  {order.status}
+                </span>
+              </div>
+
+              <div className="border-t border-b border-gray-50 py-3 my-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Farmer:</span>
+                  <span className="font-medium text-gray-900">{order.farmer?.name || 'Unknown'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Amount:</span>
+                  <span className="font-bold text-green-600 text-lg">{order.bidAmount}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )
 
   // Main content router - Determines which section to display based on active tab
   const renderContent = () => {
@@ -1221,7 +1222,6 @@ const BuyerDashboard = () => {
   // Main component return - Renders the complete buyer dashboard interface
   return (
     <div className="min-h-screen bg-gray-50"> {/* Main container with gray background */}
-      {renderPrintableReport()}
       {/* Top navigation bar with logo and user controls */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

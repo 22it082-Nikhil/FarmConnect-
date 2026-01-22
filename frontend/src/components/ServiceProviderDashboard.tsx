@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react' // For managing component state
 import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons for service provider dashboard
-  Truck, Users, BarChart3, MapPin, IndianRupee,
-  TrendingUp, CheckCircle, Clock, Star, Settings, LogOut, Plus,
-  Search, Eye, MessageSquare, FileText, Download, Upload, Wrench, Menu, User,
+  Truck, Users, ShoppingCart, BarChart3, Calendar, MapPin, IndianRupee,
+  TrendingUp, TrendingDown, Shield, CheckCircle, Clock, Star, Settings, LogOut, Plus,
+  Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Wrench, Menu, User,
   Bell, Trash, UserCheck, Home, Briefcase, Award, Trash2
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
