@@ -840,8 +840,8 @@ const BuyerDashboard = () => {
                     <td className="border border-gray-300 p-3 font-bold text-green-700">{order.bidAmount}</td>
                     <td className="border border-gray-300 p-3">
                       <span className={`px-2 py-1 text-xs font-bold uppercase rounded-full border ${order.status === 'accepted' ? 'border-green-500 text-green-700 bg-green-50' :
-                          order.status === 'rejected' ? 'border-red-500 text-red-700 bg-red-50' :
-                            'border-yellow-500 text-yellow-700 bg-yellow-50'
+                        order.status === 'rejected' ? 'border-red-500 text-red-700 bg-red-50' :
+                          'border-yellow-500 text-yellow-700 bg-yellow-50'
                         }`}>
                         {order.status}
                       </span>
@@ -1222,6 +1222,7 @@ const BuyerDashboard = () => {
   // Main component return - Renders the complete buyer dashboard interface
   return (
     <div className="min-h-screen bg-gray-50"> {/* Main container with gray background */}
+      {renderPrintableReport()}
       {/* Top navigation bar with logo and user controls */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
