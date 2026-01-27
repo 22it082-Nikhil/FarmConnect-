@@ -299,7 +299,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <Leaf className="w-12 h-12 -mr-1 -mt-1 text-green-500" />
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 -mt-1 rounded-lg object-contain brightness-0 invert" />
                 <span className="text-xl font-bold text-white">FarmConnect</span>
               </div>
               <p className="text-gray-400">
