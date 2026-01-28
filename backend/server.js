@@ -43,6 +43,7 @@ app.use('/api/rentals', require('./routes/rentals'));
 app.use('/api/offers', require('./routes/offers'));
 app.use('/api/provider-services', require('./routes/providerServices'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/chat', require('./routes/chat'));
 
 // Server listening logic for local dev vs Vercel
 const PORT = process.env.PORT || 5001;
