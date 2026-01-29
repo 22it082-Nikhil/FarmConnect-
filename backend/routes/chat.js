@@ -25,7 +25,7 @@ const getUser = async (req, res, next) => {
 router.get('/contacts', getUser, async (req, res) => {
     try {
         const userId = req.user._id;
-        const userRole = req.user.role;
+        const userRole = req.user.role.toLowerCase();
         console.log(`[Chat] Fetching contacts for User: ${userId}, Role: ${userRole}`);
 
         let contacts = [];
@@ -45,7 +45,7 @@ router.get('/contacts', getUser, async (req, res) => {
         // If Buyer: Find Farmers who have bid on my crops (Offers where buyer is me)
         else if (userRole === 'buyer') {
             const offers = await Offer.find({ buyer: userId }).populate('farmer', 'name email _id');
-            console.log(`[Chat] Found ${offers.length} offers for buyer`);
+            console.log(`[Chat] Found ${offers.length} offers for buyer (ID: ${userId})`);
             offers.forEach(offer => {
                 if (offer.farmer && !contactIds.has(offer.farmer._id.toString())) {
                     contactIds.add(offer.farmer._id.toString());
