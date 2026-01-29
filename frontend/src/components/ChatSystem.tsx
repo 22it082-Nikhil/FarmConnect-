@@ -48,13 +48,19 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
     useEffect(() => {
         const fetchContacts = async () => {
             try {
-                if (!currentUser?.clerkId) return;
+                console.log('ChatSystem: currentUser:', currentUser);
+                if (!currentUser?.clerkId) {
+                    console.error('ChatSystem: Missing clerkId in currentUser');
+                    return;
+                }
 
                 const response = await fetch(`${API_URL}/api/chat/contacts`, {
                     headers: {
                         'x-clerk-user-id': currentUser.clerkId
                     }
                 });
+
+                console.log('ChatSystem: API Response Status:', response.status);
 
                 if (response.ok) {
                     const data = await response.json();
@@ -245,8 +251,8 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
                                 <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                     <div
                                         className={`max-w-[75%] px-4 py-2 rounded-2xl shadow-sm text-sm ${isMe
-                                                ? 'bg-blue-600 text-white rounded-br-none'
-                                                : 'bg-white text-gray-800 rounded-bl-none'
+                                            ? 'bg-blue-600 text-white rounded-br-none'
+                                            : 'bg-white text-gray-800 rounded-bl-none'
                                             }`}
                                     >
                                         <p>{msg.content}</p>
