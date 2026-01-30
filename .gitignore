@@ -38,3 +38,7 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Uploaded files
+backend/uploads/
+uploads/

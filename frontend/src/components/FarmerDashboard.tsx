@@ -84,6 +84,10 @@ const FarmerDashboard = () => {
     image: '🌾',
     status: 'active'
   })
+  const [selectedImage, setSelectedImage] = useState<File | null>(null) // Selected image file
+  const [imagePreview, setImagePreview] = useState<string | null>(null) // Image preview URL
+  const [uploadingImage, setUploadingImage] = useState(false) // Image upload loading state
+
 
   // Dynamic Requests State
   const [requests, setRequests] = useState<any[]>([])

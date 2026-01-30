@@ -13,6 +13,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
+
 // Request Logger (Critical for Vercel Debugging)
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
