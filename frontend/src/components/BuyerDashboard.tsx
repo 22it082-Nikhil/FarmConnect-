@@ -282,12 +282,14 @@ const BuyerDashboard = () => {
     if (!selectedCrop) return
 
     try {
+      const farmerId = typeof selectedCrop.farmer === 'object' ? selectedCrop.farmer._id : selectedCrop.farmer;
+
       const response = await fetch(`${API_URL}/api/offers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           offerType: 'crop',
-          farmer: selectedCrop.farmer,
+          farmer: farmerId,
           buyer: user._id,
           buyerName: user.name,
           crop: selectedCrop._id,
