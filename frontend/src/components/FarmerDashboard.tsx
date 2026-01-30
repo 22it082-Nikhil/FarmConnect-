@@ -421,6 +421,31 @@ const FarmerDashboard = () => {
     }
   }
 
+  const handleStartChat = async (offerId: string) => {
+    try {
+      if (!user?._id) return;
+      const res = await fetch(`${API_URL}/api/chats/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          offerId,
+          currentUserId: user._id
+        }),
+      });
+
+      if (res.ok) {
+        setViewOffersModal(false);
+        setActiveTab('chats');
+      } else {
+        alert('Failed to start chat');
+      }
+    } catch (error) {
+      console.error('Error starting chat:', error);
+    }
+  };
+
   // Service Request Handlers
   const handleServiceInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setServiceForm({ ...serviceForm, [e.target.name]: e.target.value })
@@ -2397,6 +2422,13 @@ const FarmerDashboard = () => {
                     </div>
 
                     <div className="flex flex-col space-y-2">
+                      <button
+                        onClick={() => handleStartChat(offer._id)}
+                        className="flex items-center justify-center w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                      >
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Chat with Buyer
+                      </button>
                       {offer.status === 'pending' && (
                         <>
                           <button

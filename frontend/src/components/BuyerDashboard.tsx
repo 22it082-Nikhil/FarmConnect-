@@ -302,6 +302,30 @@ const BuyerDashboard = () => {
     }
   }
 
+  const handleStartChat = async (offerId: string) => {
+    try {
+      if (!user?._id) return;
+      const res = await fetch(`${API_URL}/api/chats/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          offerId,
+          currentUserId: user._id
+        }),
+      });
+
+      if (res.ok) {
+        setActiveTab('chats');
+      } else {
+        alert('Failed to start chat');
+      }
+    } catch (error) {
+      console.error('Error starting chat:', error);
+    }
+  };
+
   // Renders the main overview section with dashboard statistics and key information
   const renderOverview = () => (
     <div className="space-y-6">
@@ -658,6 +682,13 @@ const BuyerDashboard = () => {
                 </div>
                 {/* Action buttons for order management */}
                 <div className="flex flex-col space-y-2">
+                  <button
+                    onClick={() => handleStartChat(order._id)}
+                    className="flex items-center justify-center w-full px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Chat with Farmer
+                  </button>
                   <button className="btn-outline text-sm py-2 px-4">Track Order</button> {/* Track order button */}
                   <button className="btn-primary text-sm py-2 px-4">View Details</button> {/* View order details button */}
                   <button
