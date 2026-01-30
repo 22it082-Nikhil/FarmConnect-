@@ -7,10 +7,11 @@ import {
   Truck, Users, BarChart3,
   TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
   FileText, Download, Plus, Search, MapPin,
-  Bell, Home, Menu, User,
+  Bell, Home, Menu, User, MessageSquare,
   Briefcase, Wrench, IndianRupee, Trash2, Award
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
+import ChatSystem from './ChatSystem'
 
 const ServiceProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -362,6 +363,30 @@ const ServiceProviderDashboard = () => {
       alert("Failed to submit bid")
     }
   }
+
+  const handleStartChat = async (offerId: string) => {
+    try {
+      if (!user?._id) return;
+      const res = await fetch(`${API_URL}/api/chats/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          offerId,
+          currentUserId: user._id
+        }),
+      });
+
+      if (res.ok) {
+        setActiveTab('chats');
+      } else {
+        alert('Failed to start chat');
+      }
+    } catch (error) {
+      console.error('Error starting chat:', error);
+    }
+  };
 
   const renderOverview = () => {
     // Dynamic Stats Calculation
@@ -825,6 +850,13 @@ const ServiceProviderDashboard = () => {
                 </div>
               </div>
               <div className="flex flex-col space-y-2">
+                <button
+                  onClick={() => handleStartChat(job._id)}
+                  className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Chat with Farmer
+                </button>
                 <button className="btn-outline text-sm py-2 px-4">View Details</button>
                 <button onClick={() => handleSubmitBid(job)} className="btn-primary text-sm py-2 px-4">Submit Bid</button>
               </div>
@@ -1482,6 +1514,9 @@ const ServiceProviderDashboard = () => {
       case 'bids': return renderBids()
       case 'history': return renderAcceptedBids()
       case 'reports': return renderReports()
+      case 'chats': return (
+        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
+      )
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -1535,8 +1570,9 @@ const ServiceProviderDashboard = () => {
                   { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
                   { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
                   { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
-                  { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> }, // New Tab
+                  { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> },
                   { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
                   <button

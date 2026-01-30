@@ -2431,7 +2431,7 @@ const FarmerDashboard = () => {
                         className="flex items-center justify-center w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
                       >
                         <MessageSquare className="w-4 h-4 mr-2" />
-                        Chat with Buyer
+                        {offer.offerType === 'service' ? 'Chat with Provider' : 'Chat with Buyer'}
                       </button>
                       {offer.status === 'pending' && (
                         <>
