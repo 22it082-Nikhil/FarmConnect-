@@ -2250,6 +2250,9 @@ const FarmerDashboard = () => {
       case 'rentals': return renderRentals()
       case 'offers': return renderOffers()
       case 'reports': return renderReports()
+      case 'chats': return (
+        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="farmer" /> : <div>Loading...</div>
+      )
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -2326,6 +2329,7 @@ const FarmerDashboard = () => {
                   { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
                   { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
                   { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
                   <button
