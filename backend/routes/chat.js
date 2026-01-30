@@ -82,7 +82,13 @@ router.post('/create', async (req, res) => {
         res.status(201).json(chat);
     } catch (error) {
         console.error('Error creating chat:', error);
-        res.status(500).json({ message: 'Server error creating chat' });
+        console.error('Error details:', {
+            offerId: req.body.offerId,
+            currentUserId: req.body.currentUserId,
+            errorMessage: error.message,
+            errorStack: error.stack
+        });
+        res.status(500).json({ message: 'Server error creating chat', error: error.message });
     }
 });
 

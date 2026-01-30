@@ -856,13 +856,22 @@ const ServiceProviderDashboard = () => {
                 </div>
               </div>
               <div className="flex flex-col space-y-2">
-                <button
-                  onClick={() => handleStartChat(job._id)}
-                  className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-                >
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Chat with Farmer
-                </button>
+                {/* Only show chat button if provider has already submitted a bid for this job */}
+                {bids.some(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id) && (
+                  <button
+                    onClick={() => {
+                      // Find the bid/offer for this job
+                      const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
+                      if (myBid) {
+                        handleStartChat(myBid._id);
+                      }
+                    }}
+                    className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Chat with Farmer
+                  </button>
+                )}
                 <button className="btn-outline text-sm py-2 px-4">View Details</button>
                 <button onClick={() => handleSubmitBid(job)} className="btn-primary text-sm py-2 px-4">Submit Bid</button>
               </div>
