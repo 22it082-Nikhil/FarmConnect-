@@ -6,13 +6,39 @@
 @tailwind components; /* Component classes */
 @tailwind utilities; /* Utility classes */
 
+/* Dark Mode CSS Variables */
 @layer base {
+  :root {
+    /* Light mode colors */
+    --bg-primary: 249 250 251; /* gray-50 */
+    --bg-secondary: 255 255 255; /* white */
+    --bg-tertiary: 243 244 246; /* gray-100 */
+    --text-primary: 31 41 55; /* gray-800 */
+    --text-secondary: 107 114 128; /* gray-500 */
+    --border-color: 229 231 235; /* gray-200 */
+    --card-bg: 255 255 255; /* white */
+    --hover-bg: 243 244 246; /* gray-100 */
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --bg-primary: 15 23 42; /* slate-900 */
+    --bg-secondary: 30 41 59; /* slate-800 */
+    --bg-tertiary: 51 65 85; /* slate-700 */
+    --text-primary: 241 245 249; /* slate-100 */
+    --text-secondary: 203 213 225; /* slate-300 */
+    --border-color: 51 65 85; /* slate-700 */
+    --card-bg: 30 41 59; /* slate-800 */
+    --hover-bg: 51 65 85; /* slate-700 */
+  }
+
   html {
     scroll-behavior: smooth;
   }
   
   body {
     font-family: 'Inter', sans-serif;
+    @apply bg-[rgb(var(--bg-primary))] text-[rgb(var(--text-primary))] transition-colors duration-200;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -39,7 +65,7 @@
   
   /* Card component style - Consistent card design with hover animations */
   .card {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2;
+    @apply bg-[rgb(var(--card-bg))] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2;
   }
   
   /* Gradient background - Green gradient for primary elements */
@@ -49,6 +75,7 @@
   
   /* Glass effect - Transparent background with blur for modern UI */
   .glass-effect {
-    @apply backdrop-blur-md bg-white/20 border border-white/30;
+    @apply backdrop-blur-md bg-white/20 dark:bg-slate-800/20 border border-white/30 dark:border-slate-700/30;
   }
 }
+

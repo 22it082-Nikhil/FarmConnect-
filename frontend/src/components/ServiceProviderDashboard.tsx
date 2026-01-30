@@ -12,6 +12,7 @@ import {
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
+import ThemeToggle from './ThemeToggle'
 
 const ServiceProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -1546,8 +1547,9 @@ const ServiceProviderDashboard = () => {
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               >
-                <Menu className="w-6 h-6" />
+                <Bell className="w-5 h-5" />
               </button>
+              <ThemeToggle />
               <div className="flex items-center -ml-3 md:ml-0">
                 <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
                 <span className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">FarmConnect</span>
