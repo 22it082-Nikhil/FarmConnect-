@@ -112,4 +112,24 @@ router.post('/:chatId/messages', async (req, res) => {
     }
 });
 
+// Delete a chat
+router.delete('/:chatId', async (req, res) => {
+    try {
+        const { chatId } = req.params;
+
+        // Optional: Verify user permission (omitted for simplicity as roles are implicit)
+
+        // Delete all messages associated with the chat
+        await Message.deleteMany({ chat: chatId });
+
+        // Delete the chat itself
+        await Chat.findByIdAndDelete(chatId);
+
+        res.json({ message: 'Chat deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting chat:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router;

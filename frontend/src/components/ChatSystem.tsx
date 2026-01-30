@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, MessageSquare, ArrowLeft, MoreVertical, Search, CheckCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, MessageSquare, ArrowLeft, MoreVertical, Search, CheckCheck, Trash, Clock } from 'lucide-react';
 import API_URL from '../config';
 
 interface User {
@@ -51,6 +52,7 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+    const [showMenu, setShowMenu] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Handle window resize for mobile responsiveness
@@ -59,6 +61,13 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => setShowMenu(false);
+        if (showMenu) window.addEventListener('click', handleClickOutside);
+        return () => window.removeEventListener('click', handleClickOutside);
+    }, [showMenu]);
 
     // Fetch all chats
     useEffect(() => {
@@ -138,6 +147,27 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
         }
     };
 
+    const handleDeleteChat = async (chatId: string) => {
+        if (!window.confirm("Are you sure you want to delete this chat? This action cannot be undone.")) return;
+
+        try {
+            const response = await fetch(`${API_URL}/api/chats/${chatId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                setChats(chats.filter(c => c._id !== chatId));
+                setSelectedChat(null);
+                setMessages([]);
+            } else {
+                alert('Failed to delete chat');
+            }
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            alert('Error deleting chat');
+        }
+    };
+
     const getOtherParticipant = (chat: Chat) => {
         return chat.participants.find(p => p._id !== currentUser.id && p.id !== currentUser.id) || { _id: 'unknown', name: 'Unknown User', email: '' } as User;
     };
@@ -202,6 +232,52 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
                                     <h3 className="font-bold text-gray-900">{getOtherParticipant(selectedChat).name}</h3>
                                     <p className="text-xs text-gray-500">{selectedChat.offer?.crop?.name}</p>
                                 </div>
+                            </div>
+                            <div className="relative">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowMenu(!showMenu);
+                                    }}
+                                    className="p-2 hover:bg-gray-50 rounded-full text-gray-400 focus:outline-none"
+                                >
+                                    <MoreVertical className="w-5 h-5" />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                <AnimatePresence>
+                                    {showMenu && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden"
+                                        >
+                                            <div className="py-1">
+                                                <button
+                                                    onClick={() => {
+                                                        fetchMessages(selectedChat._id);
+                                                        setShowMenu(false);
+                                                    }}
+                                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                                                >
+                                                    <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Refresh Chat
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        handleDeleteChat(selectedChat._id);
+                                                        setShowMenu(false);
+                                                    }}
+                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                                                >
+                                                    <Trash className="w-4 h-4 mr-2" />
+                                                    Delete Chat
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
 
@@ -321,15 +397,58 @@ const ChatSystem: React.FC<ChatSystemProps> = ({ currentUser, role }) => {
                                 Price: {selectedChat.offer?.pricePerUnit}/unit
                             </div>
                         </div>
-                        <button className="p-2 hover:bg-gray-50 rounded-full text-gray-400">
-                            <MoreVertical className="w-5 h-5" />
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowMenu(!showMenu);
+                                }}
+                                className="p-2 hover:bg-gray-50 rounded-full text-gray-400 focus:outline-none"
+                            >
+                                <MoreVertical className="w-5 h-5" />
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            <AnimatePresence>
+                                {showMenu && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden"
+                                    >
+                                        <div className="py-1">
+                                            <button
+                                                onClick={() => {
+                                                    fetchMessages(selectedChat._id);
+                                                    setShowMenu(false);
+                                                }}
+                                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                                            >
+                                                <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                                                Refresh Chat
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleDeleteChat(selectedChat._id);
+                                                    setShowMenu(false);
+                                                }}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                                            >
+                                                <Trash className="w-4 h-4 mr-2" />
+                                                Delete Chat
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
 
                     {/* Messages */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-4">
                         {messages.map((msg, index) => {
-                            const isMe = msg.sender._id === currentUser.id || msg.sender.id === currentUser.id;
+                            const isMe = msg.sender._id === currentUser.id;
                             return (
                                 <div key={index} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                     <div
