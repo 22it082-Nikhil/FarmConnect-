@@ -1126,8 +1126,9 @@ const ServiceProviderDashboard = () => {
               events={displayedBids
                 .filter(b => b.serviceRequest && b.serviceRequest.scheduledDate)
                 .map(b => ({
-                  date: new Date(b.serviceRequest.scheduledDate),
-                  type: b.status === 'accepted' ? 'job' : b.status === 'pending' ? 'pending' : 'blocked',
+                  start: new Date(b.serviceRequest.scheduledDate),
+                  end: b.serviceRequest.endDate ? new Date(b.serviceRequest.endDate) : new Date(b.serviceRequest.scheduledDate),
+                  type: b.status === 'accepted' ? 'job' as const : b.status === 'pending' ? 'pending' as const : 'blocked' as const,
                   title: `${b.serviceRequest.type} (${b.status})`,
                   details: b
                 }))

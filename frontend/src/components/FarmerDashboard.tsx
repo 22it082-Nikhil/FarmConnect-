@@ -125,7 +125,8 @@ const FarmerDashboard = () => {
     status: 'pending',
     latitude: '',
     longitude: '',
-    scheduledDate: ''
+    scheduledDate: '',
+    endDate: ''
   })
 
   // Dynamic Rentals State
@@ -532,7 +533,8 @@ const FarmerDashboard = () => {
       if (res.ok) {
         setIsServiceModalOpen(false)
         fetchRequests()
-        setServiceForm({ type: 'Vehicle', description: '', location: '', duration: '', budget: '', status: 'pending', latitude: '', longitude: '', scheduledDate: '' })
+        fetchRequests()
+        setServiceForm({ type: 'Vehicle', description: '', location: '', duration: '', budget: '', status: 'pending', latitude: '', longitude: '', scheduledDate: '', endDate: '' })
         setCurrentRequest(null)
       }
     } catch (err) {
@@ -561,7 +563,8 @@ const FarmerDashboard = () => {
       status: 'pending',
       latitude: '',
       longitude: '',
-      scheduledDate: ''
+      scheduledDate: '',
+      endDate: ''
     })
     setLocationType('text')
     setIsServiceModalOpen(true)
@@ -578,7 +581,8 @@ const FarmerDashboard = () => {
       status: request.status,
       latitude: request.coordinates?.lat?.toString() || '',
       longitude: request.coordinates?.lng?.toString() || '',
-      scheduledDate: request.scheduledDate ? new Date(request.scheduledDate).toISOString().split('T')[0] : ''
+      scheduledDate: request.scheduledDate ? new Date(request.scheduledDate).toISOString().split('T')[0] : '',
+      endDate: request.endDate ? new Date(request.endDate).toISOString().split('T')[0] : ''
     })
 
     // Set toggle based on whether coordinates exist
@@ -1737,13 +1741,25 @@ const FarmerDashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Required Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                     <input
                       type="date"
                       name="scheduledDate"
                       value={serviceForm.scheduledDate}
                       onChange={handleServiceInputChange}
                       min={new Date().toISOString().split('T')[0]} // Prevent past dates
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      name="endDate"
+                      value={serviceForm.endDate}
+                      onChange={handleServiceInputChange}
+                      min={serviceForm.scheduledDate || new Date().toISOString().split('T')[0]}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                       required
                     />
