@@ -12,11 +12,11 @@ import {
     subMonths,
     isToday
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Lock, Briefcase } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock, Briefcase, Clock } from 'lucide-react';
 
 interface CalendarEvent {
     date: Date;
-    type: 'job' | 'blocked';
+    type: 'job' | 'blocked' | 'pending';
     title?: string;
     id?: string;
     details?: any;
@@ -83,6 +83,7 @@ const Calendar = ({ events, onDateClick, onEventClick }: CalendarProps) => {
         const endDate = endOfWeek(monthEnd);
 
         const dateFormat = "d";
+
         const dayInterval = eachDayOfInterval({
             start: startDate,
             end: endDate
@@ -124,13 +125,17 @@ const Calendar = ({ events, onDateClick, onEventClick }: CalendarProps) => {
                       text-[10px] md:text-xs px-1.5 py-0.5 rounded truncate flex items-center
                       ${evt.type === 'job'
                                                 ? 'bg-green-100 text-green-700 border border-green-200'
-                                                : 'bg-red-50 text-red-600 border border-red-100'
+                                                : evt.type === 'pending'
+                                                    ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                                                    : 'bg-red-50 text-red-600 border border-red-100'
                                             }
                     `}
                                         title={evt.title}
                                     >
-                                        {evt.type === 'job' ? <Briefcase className="w-3 h-3 mr-1 flex-shrink-0" /> : <Lock className="w-3 h-3 mr-1 flex-shrink-0" />}
-                                        {evt.title || (evt.type === 'job' ? 'Job' : 'Blocked')}
+                                        {evt.type === 'job' ? <Briefcase className="w-3 h-3 mr-1 flex-shrink-0" /> :
+                                            evt.type === 'pending' ? <Clock className="w-3 h-3 mr-1 flex-shrink-0" /> :
+                                                <Lock className="w-3 h-3 mr-1 flex-shrink-0" />}
+                                        {evt.title || (evt.type === 'job' ? 'Job' : evt.type === 'pending' ? 'Pending' : 'Blocked')}
                                     </div>
                                 ))}
                             </div>
@@ -151,6 +156,10 @@ const Calendar = ({ events, onDateClick, onEventClick }: CalendarProps) => {
                 <div className="flex items-center">
                     <div className="w-3 h-3 bg-green-100 border border-green-200 rounded mr-2"></div>
                     Confirmed Job
+                </div>
+                <div className="flex items-center">
+                    <div className="w-3 h-3 bg-yellow-100 border border-yellow-200 rounded mr-2"></div>
+                    Pending Bid
                 </div>
                 <div className="flex items-center">
                     <div className="w-3 h-3 bg-red-50 border border-red-100 rounded mr-2"></div>

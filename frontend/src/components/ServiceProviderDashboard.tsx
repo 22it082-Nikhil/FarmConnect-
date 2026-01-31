@@ -24,7 +24,7 @@ const ServiceProviderDashboard = () => {
   const [user, setUser] = useState<any>(null)
 
   // My Bids State
-  const [bidViewMode, setBidViewMode] = useState<'list' | 'map'>('list')
+  const [bidViewMode, setBidViewMode] = useState<'list' | 'map' | 'calendar'>('list')
   const [bidFilter, setBidFilter] = useState<'pending' | 'accepted' | 'rejected'>('pending')
 
   useEffect(() => {
@@ -1092,6 +1092,15 @@ const ServiceProviderDashboard = () => {
               >
                 Map
               </button>
+              <button
+                onClick={() => setBidViewMode('calendar')}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${bidViewMode === 'calendar'
+                  ? 'bg-blue-100 text-blue-700 shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+              >
+                Calendar
+              </button>
             </div>
           </div>
         </motion.div>
@@ -1106,6 +1115,33 @@ const ServiceProviderDashboard = () => {
                 <p>No location data available for these bids.</p>
               </div>
             )}
+          </div>
+        ) : bidViewMode === 'calendar' ? (
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+              <CalendarIcon className="w-6 h-6 mr-2 text-blue-600" />
+              Job Calendar
+            </h2>
+            <Calendar
+              events={displayedBids
+                .filter(b => b.serviceRequest && b.serviceRequest.scheduledDate)
+                .map(b => ({
+                  date: new Date(b.serviceRequest.scheduledDate),
+                  type: b.status === 'accepted' ? 'job' : b.status === 'pending' ? 'pending' : 'blocked',
+                  title: `${b.serviceRequest.type} (${b.status})`,
+                  details: b
+                }))
+              }
+              onEventClick={(evt) => {
+                if (evt.details) {
+                  // alert(`Bid Status: ${evt.details.status}\nAmount: ${evt.details.bidAmount}\nRequest: ${evt.title}`)
+                  // Could implement a detail modal here
+                }
+              }}
+            />
+            <div className="mt-4 text-sm text-gray-500 text-center">
+              Showing {bidFilter} bids with scheduled dates.
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -1185,7 +1221,7 @@ const ServiceProviderDashboard = () => {
             )}
           </div>
         )}
-      </div>
+      </div >
     )
   }
   const generateProviderReport = () => {
