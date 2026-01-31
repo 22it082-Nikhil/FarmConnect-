@@ -12,11 +12,13 @@ import {
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
+import JobMap from './JobMap' // Import Map Component
 
 const ServiceProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [jobViewMode, setJobViewMode] = useState<'list' | 'map'>('list') // Toggle state for Jobs
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
@@ -798,85 +800,106 @@ const ServiceProviderDashboard = () => {
           <h1 className="text-3xl font-bold mb-2">Job Market</h1>
           <p className="text-blue-100 text-lg">Browse and bid on farmer service requests</p>
         </div>
-        <button className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-50 transition-colors flex items-center">
-          <Search className="w-5 h-5 mr-2" />
-          Browse More Jobs
-        </button>
+        <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <button
+            onClick={() => setJobViewMode('list')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${jobViewMode === 'list'
+              ? 'bg-blue-100 text-blue-700 shadow-sm'
+              : 'text-gray-600 hover:bg-gray-50'
+              }`}
+          >
+            List View
+          </button>
+          <button
+            onClick={() => setJobViewMode('map')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${jobViewMode === 'map'
+              ? 'bg-blue-100 text-blue-700 shadow-sm'
+              : 'text-gray-600 hover:bg-gray-50'
+              }`}
+          >
+            Map View
+          </button>
+        </div>
       </motion.div>
 
-      <div className="space-y-4">
-        {jobs.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">No active job requests found.</p>
-        ) : jobs.map((job) => (
-          <motion.div
-            key={job._id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    {job.type === 'Vehicle' ? <Truck className="w-5 h-5 text-blue-600" /> :
-                      job.type === 'Manpower' ? <Users className="w-5 h-5 text-blue-600" /> :
-                        <Wrench className="w-5 h-5 text-blue-600" />}
+      {jobViewMode === 'map' ? (
+        <JobMap jobs={jobs} />
+      ) : (
+        <div className="space-y-4">
+          {jobs.length === 0 ? (
+            <p className="text-center text-gray-500 py-8">No active job requests found.</p>
+          ) : jobs.map((job) => (
+            <motion.div
+              key={job._id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      {job.type === 'Vehicle' ? <Truck className="w-5 h-5 text-blue-600" /> :
+                        job.type === 'Manpower' ? <Users className="w-5 h-5 text-blue-600" /> :
+                          <Wrench className="w-5 h-5 text-blue-600" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{job.type} Request</h3>
+                      <p className="text-sm text-gray-600">{job.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{job.type} Request</h3>
-                    <p className="text-sm text-gray-600">{job.description}</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Farmer:</span>
+                      <p className="font-medium text-blue-600">
+                        {job.farmer && typeof job.farmer === 'object' ? (job.farmer.name || 'Unknown') : (job.farmer ? `Farmer #${job.farmer.substring(0, 6)}` : 'Unknown')}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Location:</span>
+                      <p className="font-medium">{job.location}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Budget:</span>
+                      <p className="font-medium text-green-600">{job.budget || 'Negotiable'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Status:</span>
+                      <p className={`font-medium ${job.status === 'active' ? 'text-green-600' :
+                        job.status === 'pending' ? 'text-yellow-600' :
+                          'text-gray-600'
+                        }`}>{job.status}</p>
+                    </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Farmer:</span>
-                    <p className="font-medium text-blue-600">
-                      {job.farmer && typeof job.farmer === 'object' ? (job.farmer.name || 'Unknown') : (job.farmer ? `Farmer #${job.farmer.substring(0, 6)}` : 'Unknown')}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Location:</span>
-                    <p className="font-medium">{job.location}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Budget:</span>
-                    <p className="font-medium text-green-600">{job.budget || 'Negotiable'}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Status:</span>
-                    <p className={`font-medium ${job.status === 'active' ? 'text-green-600' :
-                      job.status === 'pending' ? 'text-yellow-600' :
-                        'text-gray-600'
-                      }`}>{job.status}</p>
-                  </div>
+                <div className="flex flex-col space-y-2">
+                  {/* Only show chat button if provider has already submitted a bid for this job */}
+                  {bids.some(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id) && (
+                    <button
+                      onClick={() => {
+                        // Find the bid/offer for this job
+                        const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
+                        if (myBid) {
+                          handleStartChat(myBid._id);
+                        }
+                      }}
+                      className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Chat with Farmer
+                    </button>
+                  )}
+                  <button className="btn-outline text-sm py-2 px-4">View Details</button>
+                  <button onClick={() => handleSubmitBid(job)} className="btn-primary text-sm py-2 px-4">Submit Bid</button>
                 </div>
               </div>
-              <div className="flex flex-col space-y-2">
-                {/* Only show chat button if provider has already submitted a bid for this job */}
-                {bids.some(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id) && (
-                  <button
-                    onClick={() => {
-                      // Find the bid/offer for this job
-                      const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
-                      if (myBid) {
-                        handleStartChat(myBid._id);
-                      }
-                    }}
-                    className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Chat with Farmer
-                  </button>
-                )}
-                <button className="btn-outline text-sm py-2 px-4">View Details</button>
-                <button onClick={() => handleSubmitBid(job)} className="btn-primary text-sm py-2 px-4">Submit Bid</button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div >
   )
+
 
   /* MY BIDS SECTION */
   const renderBids = () => {

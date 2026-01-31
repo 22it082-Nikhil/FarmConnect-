@@ -20,6 +20,10 @@ const ServiceRequestSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    coordinates: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     duration: {
         type: String, // e.g., "2 days", "1 week"
         required: true
