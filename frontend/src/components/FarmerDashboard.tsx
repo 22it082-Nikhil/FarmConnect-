@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react' // For managing component state
 import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons for farmer dashboard
-  Leaf, Truck, Users, ShoppingCart, BarChart3, MapPin, IndianRupee, MessageSquare,
+  Leaf, Truck, Users, ShoppingCart, MapPin, IndianRupee, MessageSquare,
   Settings, LogOut, Plus, FileText, Download,
   Bell, Menu, User, TrendingUp, TrendingDown,
   CheckCircle, AlertCircle, Trash,
-  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop
+  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop, BarChart3
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
@@ -30,12 +30,12 @@ const FarmerDashboard = () => {
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false) // Controls sign out confirmation modal
   const [user, setUser] = useState<any>(null)
 
-  useState(() => {
+  useEffect(() => {
     const userData = localStorage.getItem('user')
     if (userData) {
       setUser(JSON.parse(userData))
     }
-  })
+  }, [])
 
   // Function to show sign out confirmation modal
   const handleSignOut = () => {
@@ -96,7 +96,20 @@ const FarmerDashboard = () => {
 
   // Service Available State (Read-only for Farmers)
   const [availableServices, setAvailableServices] = useState<any[]>([])
+  // Market Prices State
+  const [marketPrices, setMarketPrices] = useState<any[]>([])
 
+  const fetchMarketPrices = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/market-prices`)
+      if (res.ok) {
+        const data = await res.json()
+        setMarketPrices(data)
+      }
+    } catch (err) {
+      console.error("Failed to fetch market prices", err)
+    }
+  }
   const fetchAvailableServices = async () => {
     try {
       const [servicesRes, rentalsRes] = await Promise.all([
@@ -167,6 +180,7 @@ const FarmerDashboard = () => {
     image: '🚜',
     status: 'available'
   })
+
   const [selectedRentalImage, setSelectedRentalImage] = useState<File | null>(null)
   const [rentalImagePreview, setRentalImagePreview] = useState<string | null>(null)
   const [uploadingRentalImage, setUploadingRentalImage] = useState(false)
@@ -2626,6 +2640,77 @@ const FarmerDashboard = () => {
 
 
 
+  const renderMarketPrices = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Live Market Prices</h2>
+          <p className="text-gray-600">Real-time Mandi rates for key crops</p>
+        </div>
+        <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center">
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+          Live Updates
+        </div>
+      </div>
+
+      {/* Ticker / Highlights */}
+      <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+          <TrendingUp className="w-24 h-24" />
+        </div>
+        <div className="relative z-10">
+          <h3 className="text-sm text-gray-400 font-medium uppercase tracking-wider mb-2">Market Trending</h3>
+          <div className="flex space-x-8 overflow-x-auto pb-2 scrollbar-hide">
+            {marketPrices.slice(0, 5).map((item, idx) => (
+              <div key={idx} className="flex-shrink-0">
+                <div className="flex items-center space-x-2">
+                  <span className="font-bold text-lg">{item.crop}</span>
+                  <span className={`text-sm ${item.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {item.change >= 0 ? '+' : ''}{item.change}%
+                  </span>
+                </div>
+                <div className="text-2xl font-bold">₹{item.price}</div>
+                <div className="text-xs text-gray-500">{item.market}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {marketPrices.map((item: any) => (
+          <motion.div
+            key={item._id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">{item.crop}</h3>
+                <p className="text-sm text-gray-500">{item.market}</p>
+              </div>
+              <div className={`p-2 rounded-lg ${item.change >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {item.change >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+              </div>
+            </div>
+
+            <div className="flex items-end space-x-2">
+              <span className="text-3xl font-bold text-gray-900">₹{item.price}</span>
+              <span className="text-gray-500 font-medium mb-1">/ {item.unit}</span>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm">
+              <span className="text-gray-500">Last Updated</span>
+              <span className="font-medium">{new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+
   const renderContent = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
@@ -2633,6 +2718,7 @@ const FarmerDashboard = () => {
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
       case 'rentals': return renderRentals()
+      case 'market': return renderMarketPrices()
       case 'offers': return renderOffers()
       case 'reports': return renderReports()
       case 'chats': return (
@@ -2713,7 +2799,8 @@ const FarmerDashboard = () => {
                   { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
                   { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
                   { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
-                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },
                   { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
