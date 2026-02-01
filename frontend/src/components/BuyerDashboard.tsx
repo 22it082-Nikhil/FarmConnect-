@@ -1787,18 +1787,28 @@ const BuyerDashboard = () => {
                       <p className="text-sm text-gray-500 mt-2 italic">"{offer.message}"</p>
                     )}
                     <div className="mt-4 flex space-x-2">
-                      <button
-                        onClick={() => handleAcceptOffer(offer._id, (typeof offer.buyerNeed === 'object' ? offer.buyerNeed._id : offer.buyerNeed))}
-                        className="flex-1 bg-green-600 text-white py-1.5 rounded-lg text-xs font-semibold hover:bg-green-700 transition-colors"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => handleRejectOffer(offer._id, (typeof offer.buyerNeed === 'object' ? offer.buyerNeed._id : offer.buyerNeed))}
-                        className="flex-1 bg-red-50 text-red-600 border border-red-200 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
-                      >
-                        Reject
-                      </button>
+                      {offer.status === 'pending' ? (
+                        <>
+                          <button
+                            onClick={() => handleAcceptOffer(offer._id, (typeof offer.buyerNeed === 'object' ? offer.buyerNeed._id : offer.buyerNeed))}
+                            className="flex-1 bg-green-600 text-white py-1.5 rounded-lg text-xs font-semibold hover:bg-green-700 transition-colors"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleRejectOffer(offer._id, (typeof offer.buyerNeed === 'object' ? offer.buyerNeed._id : offer.buyerNeed))}
+                            className="flex-1 bg-red-50 text-red-600 border border-red-200 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
+                          >
+                            Reject
+                          </button>
+                        </>
+                      ) : (
+                        <div className={`flex-[2] py-1.5 rounded-lg text-center text-xs font-bold border ${offer.status === 'accepted' ? 'bg-green-50 text-green-700 border-green-200' :
+                          'bg-red-50 text-red-700 border-red-200'
+                          }`}>
+                          {offer.status === 'accepted' ? 'OFFER ACCEPTED ✅' : 'OFFER REJECTED ❌'}
+                        </div>
+                      )}
                       <button
                         onClick={() => handleStartChat(offer._id)}
                         className="flex-1 bg-blue-100 text-blue-700 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-200 transition-colors"
