@@ -102,10 +102,12 @@ const ServiceProviderDashboard = () => {
     type: 'Vehicle',
     description: '',
     rate: '',
-    contactPhone: '',
+    contactPhone: user?.phone || '',
     availability: 'Available',
     image: '🛠️'
   })
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
 
 
@@ -137,7 +139,6 @@ const ServiceProviderDashboard = () => {
   const handleDateClick = async (date: Date) => {
     if (!schedulingService) return
 
-    // Check if date is already blocked
     const existingBlockIndex = schedulingService.blockedDates?.findIndex((d: any) =>
       new Date(d.date).toDateString() === date.toDateString()
     )
@@ -304,10 +305,19 @@ const ServiceProviderDashboard = () => {
     }
 
     const icon = getServiceIcon(serviceForm.type)
+
+    // Use Base64 image if selected, otherwise keep existing or default
+    let finalImage = serviceForm.image;
+    if (selectedImage && imagePreview) {
+      finalImage = imagePreview;
+    } else if (!editingService && serviceForm.image === '🛠️') {
+      finalImage = icon; // Default icon if no image uploaded for new
+    }
+
     const payload = {
       provider: user._id,
       ...serviceForm,
-      image: icon
+      image: finalImage
     }
 
     try {
@@ -340,6 +350,8 @@ const ServiceProviderDashboard = () => {
           availability: 'Available',
           image: '🛠️'
         })
+        setSelectedImage(null)
+        setImagePreview(null)
       } else {
         alert('Failed to save service')
       }
@@ -360,6 +372,13 @@ const ServiceProviderDashboard = () => {
       availability: service.availability || 'Available',
       image: service.image
     })
+    // Set preview if image is a URL/Base64
+    if (service.image && (service.image.startsWith('data:') || service.image.startsWith('/'))) {
+      setImagePreview(service.image)
+    } else {
+      setImagePreview(null)
+    }
+    setSelectedImage(null)
     setIsServiceModalOpen(true)
   }
 
@@ -370,10 +389,12 @@ const ServiceProviderDashboard = () => {
       type: 'Vehicle',
       description: '',
       rate: '',
-      contactPhone: '',
+      contactPhone: user?.phone || '',
       availability: 'Available',
       image: '🛠️'
     })
+    setSelectedImage(null)
+    setImagePreview(null)
     setIsServiceModalOpen(true)
   }
 
@@ -690,6 +711,19 @@ const ServiceProviderDashboard = () => {
     )
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const renderServices = () => (
     <div className="space-y-6">
       <motion.div
@@ -722,7 +756,23 @@ const ServiceProviderDashboard = () => {
               className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
             >
               <div className="text-center mb-4">
-                <div className="text-4xl mb-2">{service.image}</div>
+                <div className="mb-4 flex justify-center">
+                  {service.image && (service.image.startsWith('/') || service.image.startsWith('data:image')) ? (
+                    <img
+                      src={service.image.startsWith('/') ? `${API_URL}${service.image}` : service.image}
+                      alt={service.title}
+                      className="w-full h-48 object-cover rounded-lg shadow-sm"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling!.classList.remove('hidden');
+                      }}
+                    />
+                  ) : (
+                    <div className="text-6xl">{service.image}</div>
+                  )}
+                  {/* Fallback */}
+                  <div className="hidden text-6xl">{service.type === 'Vehicle' ? '🚛' : '🛠️'}</div>
+                </div>
                 <h3 className="text-lg font-semibold text-gray-900">{service.title}</h3>
                 <p className="text-sm text-gray-600">{service.description}</p>
               </div>
@@ -1913,6 +1963,30 @@ const ServiceProviderDashboard = () => {
             </div>
 
             <form onSubmit={handleServiceSubmit} className="space-y-4">
+              {/* Image Upload Section */}
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-4xl text-gray-400">
+                        {serviceForm.type === 'Vehicle' ? '🚛' : '🛠️'}
+                      </div>
+                    )}
+                  </div>
+                  <label className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full text-white cursor-pointer hover:bg-blue-700 shadow-md transform translate-x-1/4 translate-y-1/4">
+                    <Plus className="w-4 h-4" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Service Title</label>
                 <input
