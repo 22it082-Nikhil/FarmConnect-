@@ -28,6 +28,7 @@ const ServiceProviderDashboard = () => {
   const [bidViewMode, setBidViewMode] = useState<'list' | 'map' | 'calendar'>('list')
   const [bidFilter, setBidFilter] = useState<'pending' | 'accepted' | 'rejected'>('pending')
   const [toasts, setToasts] = useState<any[]>([])
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -1939,11 +1940,52 @@ const ServiceProviderDashboard = () => {
                 <Bell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-blue-600" />
+              <div className="relative ml-2">
+                <div
+                  className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                >
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center border border-blue-200">
+                    <span className="text-blue-700 font-bold text-sm">
+                      {user?.name?.charAt(0).toUpperCase() || 'S'}
+                    </span>
+                  </div>
+                  <span className="hidden md:block text-sm font-semibold text-gray-700">{user?.name || 'Service Provider'}</span>
                 </div>
-                <span className="hidden md:block text-sm font-medium text-gray-900">{user?.name || 'Service Provider'}</span>
+
+                {/* Dropdown Menu */}
+                {isProfileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
+                    <button
+                      onClick={() => {
+                        setActiveTab('profile');
+                        setIsProfileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <User className="w-4 h-4 mr-3 text-gray-500" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <Settings className="w-4 h-4 mr-3 text-gray-500" />
+                      Settings
+                    </button>
+                    <div className="h-px bg-gray-100 my-1 mx-2"></div>
+                    <button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        handleSignOut();
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors font-medium"
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

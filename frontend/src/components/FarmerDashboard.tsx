@@ -99,6 +99,8 @@ const FarmerDashboard = () => {
   const [availableServices, setAvailableServices] = useState<any[]>([])
   // Market Prices State
   const [marketPrices, setMarketPrices] = useState<any[]>([])
+  // Profile Dropdown State
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
   const fetchMarketPrices = async () => {
     try {
@@ -3119,35 +3121,52 @@ const FarmerDashboard = () => {
                 <Bell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </button>
-              <div className="relative group">
-                <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-primary-600" />
+              <div className="relative ml-3">
+                <div
+                  className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                >
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
+                    <span className="text-green-700 font-bold text-sm">
+                      {user?.name?.charAt(0).toUpperCase() || 'F'}
+                    </span>
                   </div>
-                  <span className="hidden md:block text-sm font-medium text-gray-900">{user?.name || 'Farmer'}</span>
+                  <span className="hidden md:block text-sm font-semibold text-gray-700">{user?.name || 'Farmer'}</span>
                 </div>
 
                 {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <div className="py-2">
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                      <User className="w-4 h-4 mr-2" />
+                {isProfileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
+                    <button
+                      onClick={() => {
+                        setActiveTab('profile');
+                        setIsProfileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <User className="w-4 h-4 mr-3 text-gray-500" />
                       Profile
                     </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                      <Settings className="w-4 h-4 mr-2" />
+                    <button
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <Settings className="w-4 h-4 mr-3 text-gray-500" />
                       Settings
                     </button>
-                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="h-px bg-gray-100 my-1 mx-2"></div>
                     <button
-                      onClick={handleSignOut}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        handleSignOut();
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors font-medium"
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
+                      <LogOut className="w-4 h-4 mr-3" />
                       Sign Out
                     </button>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

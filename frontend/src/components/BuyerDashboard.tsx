@@ -9,7 +9,7 @@ import {
   Search, FileText, Crop,
   Package, Bell, Home, Menu, User, Shield, Heart,
   MapPin, UserCheck, Trash, MessageSquare, ClipboardList, Plus, Edit, Eye,
-  Truck, X
+  Truck, X, Settings
 } from 'lucide-react' // Icon library for consistent UI elements
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, Line
@@ -130,6 +130,10 @@ const BuyerDashboard = () => {
     setSelectedOrder(order)
     setIsTrackingModalOpen(true)
   }
+
+  // Profile Dropdown State
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
 
   const simulateTrackingUpdate = async (status: string, note: string) => {
     if (!selectedOrder?._id) return;
@@ -1733,8 +1737,8 @@ const BuyerDashboard = () => {
                       loading="lazy"
                       allowFullScreen
                       src={`https://maps.google.com/maps?q=${profileForm.latitude && profileForm.longitude
-                          ? `${profileForm.latitude},${profileForm.longitude}`
-                          : encodeURIComponent(profileForm.location || 'Gujarat')
+                        ? `${profileForm.latitude},${profileForm.longitude}`
+                        : encodeURIComponent(profileForm.location || 'Gujarat')
                         }&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                     ></iframe>
                   ) : (
@@ -1805,8 +1809,8 @@ const BuyerDashboard = () => {
                       loading="lazy"
                       allowFullScreen
                       src={`https://maps.google.com/maps?q=${user.latitude && user.longitude
-                          ? `${user.latitude},${user.longitude}`
-                          : encodeURIComponent(user.location || '')
+                        ? `${user.latitude},${user.longitude}`
+                        : encodeURIComponent(user.location || '')
                         }&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                     ></iframe>
                   ) : (
@@ -1880,11 +1884,53 @@ const BuyerDashboard = () => {
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span> {/* Notification indicator */}
               </button>
               {/* User profile section */}
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-orange-600" /> {/* User avatar icon */}
+              {/* User profile section */}
+              <div className="relative ml-3">
+                <div
+                  className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                >
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
+                    <span className="text-green-700 font-bold text-sm">
+                      {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <span className="hidden md:block text-sm font-semibold text-gray-700">{user?.name || 'Buyer'}</span>
                 </div>
-                <span className="hidden md:block text-sm font-medium text-gray-900">{user?.name || 'Buyer'}</span> {/* User role/title */}
+
+                {/* Dropdown Menu */}
+                {isProfileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
+                    <button
+                      onClick={() => {
+                        setActiveTab('profile');
+                        setIsProfileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <User className="w-4 h-4 mr-3 text-gray-500" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                    >
+                      <Settings className="w-4 h-4 mr-3 text-gray-500" />
+                      Settings
+                    </button>
+                    <div className="h-px bg-gray-100 my-1 mx-2"></div>
+                    <button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        setShowSignOutConfirm(true);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors font-medium"
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
