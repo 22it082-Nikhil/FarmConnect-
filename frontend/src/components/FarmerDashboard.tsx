@@ -2735,24 +2735,24 @@ const FarmerDashboard = () => {
         </motion.div>
 
         {/* Market Summary Cards (Matching Reports Style) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
           {/* Highest Price Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            className="bg-white p-4 md:p-6 rounded-xl shadow-lg border border-gray-100"
           >
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">Top Performer</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.highest.price}</h3>
+                <p className="text-xs md:text-sm font-medium text-gray-500">Top Performer</p>
+                <h3 className="text-xl md:text-3xl font-bold text-gray-900 mt-1 md:mt-2">₹{stats.highest.price}</h3>
               </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="p-2 md:p-3 bg-green-100 rounded-lg">
+                <TrendingUp className="w-4 h-4 md:w-6 md:h-6 text-green-600" />
               </div>
             </div>
-            <p className="text-sm text-green-600 mt-4 flex items-center">
-              <span className="font-bold mr-1">{stats.highest.crop}</span> is strictly high
+            <p className="text-xs md:text-sm text-green-600 mt-2 md:mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.highest.crop}</span> high
             </p>
           </motion.div>
 
@@ -2761,19 +2761,19 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            className="bg-white p-4 md:p-6 rounded-xl shadow-lg border border-gray-100"
           >
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">Lowest Rate</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.lowest.price}</h3>
+                <p className="text-xs md:text-sm font-medium text-gray-500">Lowest Rate</p>
+                <h3 className="text-xl md:text-3xl font-bold text-gray-900 mt-1 md:mt-2">₹{stats.lowest.price}</h3>
               </div>
-              <div className="p-3 bg-red-100 rounded-lg">
-                <TrendingDown className="w-6 h-6 text-red-600" />
+              <div className="p-2 md:p-3 bg-red-100 rounded-lg">
+                <TrendingDown className="w-4 h-4 md:w-6 md:h-6 text-red-600" />
               </div>
             </div>
-            <p className="text-sm text-red-600 mt-4 flex items-center">
-              <span className="font-bold mr-1">{stats.lowest.crop}</span> is currently low
+            <p className="text-xs md:text-sm text-red-600 mt-2 md:mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.lowest.crop}</span> low
             </p>
           </motion.div>
 
@@ -2782,18 +2782,18 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+            className="bg-white p-4 md:p-6 rounded-xl shadow-lg border border-gray-100 col-span-2 md:col-span-1"
           >
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">Market Average</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.avg}</h3>
+                <p className="text-xs md:text-sm font-medium text-gray-500">Market Average</p>
+                <h3 className="text-xl md:text-3xl font-bold text-gray-900 mt-1 md:mt-2">₹{stats.avg}</h3>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <BarChart3 className="w-6 h-6 text-blue-600" />
+              <div className="p-2 md:p-3 bg-blue-100 rounded-lg">
+                <BarChart3 className="w-4 h-4 md:w-6 md:h-6 text-blue-600" />
               </div>
             </div>
-            <p className="text-sm text-blue-600 mt-4 flex items-center">
+            <p className="text-xs md:text-sm text-blue-600 mt-2 md:mt-4 flex items-center">
               Average across all Mandis
             </p>
           </motion.div>
@@ -2801,18 +2801,18 @@ const FarmerDashboard = () => {
 
         {/* Detailed Market Rates Table (Matching Reports Style) */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Market Rates Analysis</h3>
+          <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-200">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Market Rates Analysis</h3>
           </div>
           <div className="p-0 sm:p-6"> {/* Removed padding on mobile for full width table feel */}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
+                    <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Market</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price / Unit</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
+                    <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price / Unit</th>
+                    <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Last Updated</th>
                   </tr>
                 </thead>
