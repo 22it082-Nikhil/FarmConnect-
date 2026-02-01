@@ -2171,6 +2171,22 @@ const BuyerDashboard = () => {
                     Chat
                   </button>
                 </div>
+
+                {/* Farmer Location Map */}
+                <div className="mt-6 rounded-lg overflow-hidden border border-orange-200 shadow-sm relative group">
+                  <div className="absolute inset-0 bg-transparent pointer-events-none z-10 border-4 border-white/50 rounded-lg"></div>
+                  <iframe
+                    width="100%"
+                    height="200"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedOrder.farmer?.location || 'Gujarat, India')}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                  ></iframe>
+                  <div className="absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded text-xs text-gray-500 shadow-sm z-20">
+                    📍 {selectedOrder.farmer?.location || 'Gujarat, India'}
+                  </div>
+                </div>
               </div>
 
               {/* Order Status Timeline */}
