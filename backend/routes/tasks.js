@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
-const auth = require('../middleware/auth'); // Assuming auth middleware exists (checking server.js usually) - Wait, previous files didn't use explicit auth middleware import in snippets, but usually it's passed or stored. 
 // Actually looking at other files (e.g. `marketPrices.js`), they might not be using auth middleware on *every* route or using a specific pattern. 
 // However, User data is needed. The dashboard sends user ID or token. 
 // I'll check how `serviceRequests.js` handles user identification. 
