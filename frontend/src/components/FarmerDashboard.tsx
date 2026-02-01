@@ -2647,82 +2647,162 @@ const FarmerDashboard = () => {
 
 
 
-  const renderMarketPrices = () => (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-6 sm:p-8 text-white"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Live Market Prices</h2>
-            <p className="text-primary-100 text-sm sm:text-lg">Real-time Mandi rates for key crops</p>
-          </div>
-          <div className="bg-white text-primary-600 px-4 py-2 rounded-xl font-bold shadow-lg flex items-center text-sm sm:text-base w-full sm:w-auto justify-center sm:justify-start">
-            <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-            Live Updates
-          </div>
-        </div>
-      </motion.div>
+  /* Derived Market Stats for Summary Cards */
+  const getMarketStats = () => {
+    if (marketPrices.length === 0) return { highest: { price: 0, crop: 'N/A' }, lowest: { price: 0, crop: 'N/A' }, avg: 0 }
 
-      {/* Ticker / Highlights */}
-      <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <TrendingUp className="w-24 h-24" />
-        </div>
-        <div className="relative z-10">
-          <h3 className="text-sm text-gray-400 font-medium uppercase tracking-wider mb-2">Market Trending</h3>
-          <div className="flex space-x-4 sm:space-x-8 overflow-x-auto pb-2 scrollbar-hide">
-            {marketPrices.slice(0, 5).map((item, idx) => (
-              <div key={idx} className="flex-shrink-0">
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold text-lg">{item.crop}</span>
-                  <span className={`text-sm ${item.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {item.change >= 0 ? '+' : ''}{item.change}%
-                  </span>
-                </div>
-                <div className="text-2xl font-bold">₹{item.price}</div>
-                <div className="text-xs text-gray-500">{item.market}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    const sorted = [...marketPrices].sort((a, b) => b.price - a.price)
+    const highest = sorted[0]
+    const lowest = sorted[sorted.length - 1]
+    const avg = Math.round(marketPrices.reduce((acc, curr) => acc + (parseFloat(curr.price) || 0), 0) / marketPrices.length)
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {marketPrices.map((item: any) => (
+    return { highest, lowest, avg }
+  }
+
+  const renderMarketPrices = () => {
+    const stats = getMarketStats()
+
+    return (
+      <div className="space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-6 sm:p-8 text-white"
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">Live Market Prices</h2>
+              <p className="text-primary-100 text-sm sm:text-lg">Real-time Mandi rates for key crops</p>
+            </div>
+            <div className="bg-white text-primary-600 px-4 py-2 rounded-xl font-bold shadow-lg flex items-center text-sm sm:text-base w-full sm:w-auto justify-center sm:justify-start">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              Live Updates
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Market Summary Cards (Matching Reports Style) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Highest Price Card */}
           <motion.div
-            key={item._id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-xl transition-all"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
           >
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">{item.crop}</h3>
-                <p className="text-sm text-gray-500">{item.market}</p>
+                <p className="text-sm font-medium text-gray-500">Top Performer</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.highest.price}</h3>
               </div>
-              <div className={`p-2 rounded-lg ${item.change >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {item.change >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+              <div className="p-3 bg-green-100 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
             </div>
-
-            <div className="flex items-end space-x-2">
-              <span className="text-3xl font-bold text-gray-900">₹{item.price}</span>
-              <span className="text-gray-500 font-medium mb-1">/ {item.unit}</span>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm">
-              <span className="text-gray-500">Last Updated</span>
-              <span className="font-medium">{new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
+            <p className="text-sm text-green-600 mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.highest.crop}</span> is strictly high
+            </p>
           </motion.div>
-        ))}
+
+          {/* Lowest Price Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Lowest Rate</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.lowest.price}</h3>
+              </div>
+              <div className="p-3 bg-red-100 rounded-lg">
+                <TrendingDown className="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+            <p className="text-sm text-red-600 mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.lowest.crop}</span> is currently low
+            </p>
+          </motion.div>
+
+          {/* Avg Price Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Market Average</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.avg}</h3>
+              </div>
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <BarChart3 className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-sm text-blue-600 mt-4 flex items-center">
+              Average across all Mandis
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Detailed Market Rates Table (Matching Reports Style) */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Market Rates Analysis</h3>
+          </div>
+          <div className="p-0 sm:p-6"> {/* Removed padding on mobile for full width table feel */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price / Unit</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Last Updated</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {marketPrices.map((item: any, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 bg-green-100 rounded-full flex items-center justify-center text-xl">
+                            {/* Simple icon mapping based on crop name could go here, using default for now */}
+                            🌱
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{item.crop}</div>
+                            <div className="text-xs text-gray-500 sm:hidden">{new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{item.market}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-bold text-gray-900">₹{item.price}</div>
+                        <div className="text-xs text-gray-500">per {item.unit}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${parseFloat(item.change) >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                          {parseFloat(item.change) >= 0 ? '+' : ''}{item.change}%
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                        {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const renderContent = () => {
     switch (activeTab) {
