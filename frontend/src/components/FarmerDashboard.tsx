@@ -8,12 +8,10 @@ import {
   Settings, LogOut, Plus, FileText, Download,
   Bell, Menu, User, TrendingUp, TrendingDown,
   CheckCircle, AlertCircle, Trash,
-  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop, BarChart3,
-  ShoppingBag, Calendar as CalendarIcon
+  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop, BarChart3
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
-import Calendar from './Calendar'
 
 // Main Farmer Dashboard Component - Provides comprehensive interface for crop farmers
 const FarmerDashboard = () => {
@@ -100,81 +98,6 @@ const FarmerDashboard = () => {
   const [availableServices, setAvailableServices] = useState<any[]>([])
   // Market Prices State
   const [marketPrices, setMarketPrices] = useState<any[]>([])
-
-  // Farm Calendar State
-  const [tasks, setTasks] = useState<any[]>([])
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
-  const [taskForm, setTaskForm] = useState({
-    title: '',
-    description: '',
-    date: new Date().toISOString().split('T')[0],
-    type: 'general',
-    status: 'pending'
-  })
-
-  // Helper: Fetch Tasks
-  const fetchTasks = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/tasks`, {
-        headers: { 'x-user-email': user?.email || '' }
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setTasks(data)
-      }
-    } catch (err) {
-      console.error("Failed to fetch tasks", err)
-    }
-  }
-
-  // Helper: Create Task
-  const handleCreateTask = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const res = await fetch(`${API_URL}/api/tasks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-email': user?.email || ''
-        },
-        body: JSON.stringify(taskForm)
-      })
-      if (res.ok) {
-        setTaskForm({
-          title: '',
-          description: '',
-          date: new Date().toISOString().split('T')[0],
-          type: 'general',
-          status: 'pending'
-        })
-        setIsTaskModalOpen(false)
-        fetchTasks()
-        // Success toast here
-      }
-    } catch (err) {
-      console.error("Failed to create task", err)
-    }
-  }
-
-  // Helper: Toggle Task Status
-  const toggleTaskStatus = async (id: string, currentStatus: string) => {
-    try {
-      const newStatus = currentStatus === 'completed' ? 'pending' : 'completed'
-      const res = await fetch(`${API_URL}/api/tasks/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-email': user?.email || ''
-        },
-        body: JSON.stringify({ status: newStatus })
-      })
-      if (res.ok) {
-        fetchTasks()
-      }
-    } catch (err) {
-      console.error("Failed to update task", err)
-    }
-  }
 
   const fetchMarketPrices = async () => {
     try {
@@ -358,7 +281,6 @@ const FarmerDashboard = () => {
       fetchAvailableServices()
       fetchReportData()
       fetchMarketPrices()
-      fetchTasks()
     }
   }, [user])
 
@@ -2884,289 +2806,131 @@ const FarmerDashboard = () => {
     )
   }
 
-  /* Farm Calendar Renderer */
-  const renderCalendar = () => (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 text-white flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Farm Calendar</h1>
-          <p className="text-green-100 text-lg">Manage your farming schedule and tasks</p>
-        </div>
-        <button
-          onClick={() => setIsTaskModalOpen(true)}
-          className="bg-white text-green-700 px-6 py-3 rounded-xl font-semibold shadow-lg hover:bg-green-50 transition-colors flex items-center"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Add Task
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calendar View */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-          <Calendar
-            events={tasks.map(task => ({
-              id: task._id,
-              title: task.title,
-              start: new Date(task.date),
-              end: new Date(task.date),
-              type: task.status === 'completed' ? 'job' : 'pending', // Green for completed, Yellow for pending
-              details: task
-            }))}
-            onEventClick={(event) => {
-              // Handle event click if needed, maybe show details modal
-              console.log('Event clicked:', event);
-            }}
-          />
-        </div>
-
-        {/* Upcoming Tasks Side Panel */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col h-full">
-          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <Clock className="w-5 h-5 mr-2 text-green-600" />
-            Upcoming Tasks
-          </h3>
-
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-            {tasks.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <p>No upcoming tasks.</p>
-                <button
-                  onClick={() => setIsTaskModalOpen(true)}
-                  className="mt-2 text-green-600 font-medium hover:underline"
-                >
-                  Create one now
-                </button>
-              </div>
-            ) : (
-              tasks
-                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                .slice(0, 5) // Show top 5
-                .map(task => (
-                  <div key={task._id} className={`p-4 rounded-lg border ${task.status === 'completed' ? 'bg-gray-50 border-gray-200' : 'bg-green-50 border-green-200'} transition-all`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className={`font-semibold ${task.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'}`}>{task.title}</h4>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${task.type === 'planting' ? 'bg-amber-100 text-amber-800' :
-                        task.type === 'harvesting' ? 'bg-orange-100 text-orange-800' :
-                          task.type === 'fertilizing' ? 'bg-blue-100 text-blue-800' :
-                            task.type === 'investing' ? 'bg-purple-100 text-purple-800' :
-                              'bg-gray-100 text-gray-800'
-                        }`}>
-                        {task.type.charAt(0).toUpperCase() + task.type.slice(1)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-3">{task.description}</p>
-                    <div className="flex justify-between items-center text-xs">
-                      <div className="flex items-center text-gray-500">
-                        <CalendarIcon className="w-3 h-3 mr-1" />
-                        {new Date(task.date).toLocaleDateString()}
-                      </div>
-                      <button
-                        onClick={() => toggleTaskStatus(task._id, task.status)}
-                        className={`flex items-center px-2 py-1 rounded-md transition-colors ${task.status === 'completed'
-                          ? 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                          : 'bg-green-600 text-white hover:bg-green-700'
-                          }`}
-                      >
-                        {task.status === 'completed' ? 'Undo' : 'Complete'}
-                      </button>
-                    </div>
-                  </div>
-                ))
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Add Task Modal */}
-      {isTaskModalOpen && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-lg w-full mx-4 shadow-2xl"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Add New Task</h3>
-              <button onClick={() => setIsTaskModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateTask} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input
-                  type="text"
-                  required
-                  value={taskForm.title}
-                  onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="e.g., Sowing Wheat"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                <select
-                  value={taskForm.type}
-                  onChange={(e) => setTaskForm({ ...taskForm, type: e.target.value as any })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="general">General</option>
-                  <option value="planting">Planting</option>
-                  <option value="harvesting">Harvesting</option>
-                  <option value="fertilizing">Fertilizing</option>
-                  <option value="investing">Investing</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input
-                  type="date"
-                  required
-                  value={taskForm.date}
-                  onChange={(e) => setTaskForm({ ...taskForm, date: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  value={taskForm.description}
-                  onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  rows={3}
-                  placeholder="Additional details..."
-                />
-              </div>
-
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsTaskModalOpen(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium shadow-sm"
-                >
-                  Save Task
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
-    </div>
-  )
-
-  /* Main Content Renderer */
   const renderContent = () => {
     switch (activeTab) {
-      case 'services':
-        return renderServices()
-      case 'rentals':
-        return renderRentals()
-      case 'market':
-        return renderMarketPrices()
-      case 'calendar':
-        return renderCalendar()
-      case 'reports':
-        return renderReports()
-      case 'available-services':
-        return renderAvailableServices()
-      case 'messages':
-        return user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="farmer" /> : <div>Loading...</div>
-      default:
-        return renderServices()
+      case 'overview': return renderOverview()
+      case 'crops': return renderCrops()
+      case 'services': return renderServices()
+      case 'available_services': return renderAvailableServices()
+      case 'rentals': return renderRentals()
+      case 'market': return renderMarketPrices()
+      case 'offers': return renderOffers()
+      case 'reports': return renderReports()
+      case 'chats': return (
+        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="farmer" /> : <div>Loading...</div>
+      )
+      case 'profile': return renderProfile()
+      default: return renderOverview()
     }
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans">
-      {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="h-full flex flex-col">
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center space-x-3">
-              <div className="bg-green-100 p-2 rounded-lg">
-                <Leaf className="w-8 h-8 text-green-600" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">FarmConnect</h1>
-                <p className="text-xs text-gray-500 font-medium tracking-wide">FARMER PORTAL</p>
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-0 md:space-x-4">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <div className="flex items-center -ml-3 md:ml-0">
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
+                <span className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">FarmConnect</span>
               </div>
             </div>
-          </div>
 
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            {[
-              { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
-              { id: 'available-services', name: 'Service Market', icon: <ShoppingBag className="w-5 h-5" /> },
-              { id: 'rentals', name: 'My Rentals', icon: <Wrench className="w-5 h-5" /> },
-              { id: 'calendar', name: 'Farm Calendar', icon: <CalendarIcon className="w-5 h-5" /> }, // New
-              { id: 'market', name: 'Market Prices', icon: <TrendingUp className="w-5 h-5" /> },
-              { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
-              { id: 'messages', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id)
-                  setSidebarOpen(false)
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === item.id
-                  ? 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 shadow-sm border border-green-200'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-              >
-                <div className={`${activeTab === item.id ? 'text-green-600' : 'text-gray-400'}`}>
-                  {item.icon}
-                </div>
-                <span>{item.name}</span>
-                {item.id === 'services' && requests.length > 0 && (
-                  <span className="ml-auto bg-orange-100 text-orange-600 py-0.5 px-2 rounded-full text-xs font-bold">
-                    {requests.length}
-                  </span>
-                )}
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
+                <Bell className="w-5 h-5" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </button>
-            ))}
-          </nav>
+              <div className="relative group">
+                <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100">
+                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <span className="hidden md:block text-sm font-medium text-gray-900">{user?.name || 'Farmer'}</span>
+                </div>
 
-          <div className="p-4 border-t border-gray-100">
-            <button
-              onClick={handleSignOut}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium">
-              <LogOut className="w-5 h-5 opacity-70" />
-              <span>Logout</span>
-            </button>
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-2">
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                      <User className="w-4 h-4 mr-2" />
+                      Profile
+                    </button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </button>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </aside>
+      </nav>
 
-      <div className="flex-1 lg:ml-0 flex flex-col min-h-screen">
-        {/* Mobile Header */}
-        <header className="bg-white shadow-sm lg:hidden flex items-center justify-between p-4 px-6 z-40 sticky top-0">
-          <div className="flex items-center space-x-3">
-            <div className="bg-green-100 p-2 rounded-lg">
-              <Leaf className="w-6 h-6 text-green-600" />
+      <div className="flex">
+        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } `}>
+          <div className="h-full flex flex-col">
+            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+              <nav className="mt-5 flex-1 px-2 space-y-1">
+                {[
+                  { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+                  { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
+                  { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
+                  { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
+                  { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
+                  { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
+                  { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },
+                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
+                  { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
+                      ? 'bg-primary-100 text-primary-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      } `}
+                  >
+                    <span className="mr-3">{item.icon}</span>
+                    {item.name}
+                  </button>
+                ))}
+              </nav>
             </div>
-            <span className="font-bold text-gray-900 text-lg">FarmConnect</span>
-          </div>
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-gray-600 rounded-lg hover:bg-gray-100">
-            <Menu className="w-6 h-6" />
-          </button>
-        </header>
 
-        <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-          {renderContent()}
-        </main>
+            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 lg:ml-0">
+          <main className="py-6 px-4 sm:px-6 lg:px-8">
+            {renderContent()}
+          </main>
+        </div>
       </div>
 
       {sidebarOpen && (
