@@ -2507,9 +2507,9 @@ const FarmerDashboard = () => {
             ${reportData.cropSales.length > 0 ? reportData.cropSales.map((sale) => `
               <tr>
                 <td>${new Date(sale.createdAt).toLocaleDateString()}</td>
-                <td><strong>${sale.crop?.name || 'Unknown'}</strong></td>
-                <td>${sale.buyerName || 'Direct Buyer'}</td>
-                <td>${sale.quantityRequested} ${sale.crop?.unit || 'units'}</td>
+                <td><strong>${sale.crop?.name || (sale.buyerNeed && typeof sale.buyerNeed === 'object' ? sale.buyerNeed.cropName : 'Buyer Fulfillment') || 'Unknown'}</strong></td>
+                <td>${sale.buyer?.name || (sale.buyerNeed && typeof sale.buyerNeed === 'object' && sale.buyerNeed.buyer?.name) || sale.buyerName || 'Direct Buyer'}</td>
+                <td>${sale.quantityRequested} ${sale.crop?.unit || (sale.buyerNeed && typeof sale.buyerNeed === 'object' ? sale.buyerNeed.unit : 'units')}</td>
                 <td style="font-weight: bold; color: #16a34a;">₹${sale.bidAmount?.toString().replace(/[₹$]/g, '')}</td>
               </tr>
             `).join('') : '<tr><td colspan="5" style="text-align:center; padding: 20px;">No crop sales recorded.</td></tr>'}

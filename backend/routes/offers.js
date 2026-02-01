@@ -28,7 +28,10 @@ router.get('/', async (req, res) => {
         const offers = await Offer.find(query)
             .populate('crop')
             .populate('serviceRequest')
-            .populate('buyerNeed') // Populate requirement details
+            .populate({
+                path: 'buyerNeed',
+                populate: { path: 'buyer', select: 'name email phone' }
+            }) // Populate requirement details with nested buyer
             .populate('farmer', 'name email phone') // Populate farmer details
             .populate('provider', 'name email phone') // Populate provider details
             .populate('buyer', 'name email phone') // Populate buyer details
