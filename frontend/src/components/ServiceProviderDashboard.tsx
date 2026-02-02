@@ -2543,7 +2543,7 @@ const ServiceProviderDashboard = () => {
       )}
       {/* Bid Details Modal */}
       {selectedBidForDetail && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 print:hidden">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
