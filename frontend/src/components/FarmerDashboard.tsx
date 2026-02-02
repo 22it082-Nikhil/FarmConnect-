@@ -3424,560 +3424,562 @@ const FarmerDashboard = () => {
       {/* Render Bill when in print mode */}
       {printMode === 'bill' && renderCropSaleBill()}
 
-      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-0 md:space-x-4">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-              <div className="flex items-center -ml-3 md:ml-0">
-                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
-                <span className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">FarmConnect</span>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-              </button>
-              <div className="relative ml-3">
-                <div
-                  className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+      <div className="print:hidden">
+        <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-0 md:space-x-4">
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 >
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
-                    <span className="text-green-700 font-bold text-sm">
-                      {user?.name?.charAt(0).toUpperCase() || 'F'}
-                    </span>
-                  </div>
-                  <span className="hidden md:block text-sm font-semibold text-gray-700">{user?.name || 'Farmer'}</span>
+                  <Menu className="w-6 h-6" />
+                </button>
+                <div className="flex items-center -ml-3 md:ml-0">
+                  <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
+                  <span className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">FarmConnect</span>
                 </div>
-
-                {/* Dropdown Menu */}
-                {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-                    <button
-                      onClick={() => {
-                        setActiveTab('profile');
-                        setIsProfileMenuOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
-                    >
-                      <User className="w-4 h-4 mr-3 text-gray-500" />
-                      Profile
-                    </button>
-                    <button
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
-                    >
-                      <Settings className="w-4 h-4 mr-3 text-gray-500" />
-                      Settings
-                    </button>
-                    <div className="h-px bg-gray-100 my-1 mx-2"></div>
-                    <button
-                      onClick={() => {
-                        setIsProfileMenuOpen(false);
-                        handleSignOut();
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors font-medium"
-                    >
-                      <LogOut className="w-4 h-4 mr-3" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
               </div>
-            </div>
-          </div>
-        </div>
-      </nav>
 
-      <div className="flex">
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } `}>
-          <div className="h-full flex flex-col">
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <nav className="mt-5 flex-1 px-2 space-y-1">
-                {[
-                  { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
-                  { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> }, // New Tab
-                  { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
-                  { id: 'sold_crops', name: 'Sold Crops', icon: <ShoppingBag className="w-5 h-5" /> }, // Sold Crops Tab
-                  { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
-                  { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
-                  { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
-                  { id: 'calendar', name: 'Calendar & Tasks', icon: <CalendarIcon className="w-5 h-5" /> },
-                  { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
-                  { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },
-                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
-                  { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
-                      ? 'bg-primary-100 text-primary-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      } `}
+              <div className="flex items-center space-x-2 md:space-x-4">
+                <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg relative">
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                </button>
+                <div className="relative ml-3">
+                  <div
+                    className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   >
-                    <span className="mr-3">{item.icon}</span>
-                    {item.name}
-                  </button>
-                ))}
-              </nav>
-            </div>
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
+                      <span className="text-green-700 font-bold text-sm">
+                        {user?.name?.charAt(0).toUpperCase() || 'F'}
+                      </span>
+                    </div>
+                    <span className="hidden md:block text-sm font-semibold text-gray-700">{user?.name || 'Farmer'}</span>
+                  </div>
 
-            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
-              >
-                <LogOut className="w-5 h-5 mr-3" />
-                Sign Out
-              </button>
+                  {/* Dropdown Menu */}
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
+                      <button
+                        onClick={() => {
+                          setActiveTab('profile');
+                          setIsProfileMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                      >
+                        <User className="w-4 h-4 mr-3 text-gray-500" />
+                        Profile
+                      </button>
+                      <button
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center transition-colors font-medium"
+                      >
+                        <Settings className="w-4 h-4 mr-3 text-gray-500" />
+                        Settings
+                      </button>
+                      <div className="h-px bg-gray-100 my-1 mx-2"></div>
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors font-medium"
+                      >
+                        <LogOut className="w-4 h-4 mr-3" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </nav>
 
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-4 sm:px-6 lg:px-8">
-            {renderContent()}
-          </main>
-        </div>
-      </div>
-
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* View Offers Modal */}
-      {viewOffersModal && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 shadow-2xl overflow-y-auto max-h-[80vh]"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Received Offers</h3>
-                <p className="text-gray-600">
-                  {selectedRequestForOffers ? `For: ${selectedRequestForOffers.type} (${selectedRequestForOffers.budget || 'No Budget'})` :
-                    selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity} Kg)` :
-                      'All Offers'}
-                </p>
+        <div className="flex">
+          <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            } `}>
+            <div className="h-full flex flex-col">
+              <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+                <nav className="mt-5 flex-1 px-2 space-y-1">
+                  {[
+                    { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+                    { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> }, // New Tab
+                    { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
+                    { id: 'sold_crops', name: 'Sold Crops', icon: <ShoppingBag className="w-5 h-5" /> }, // Sold Crops Tab
+                    { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
+                    { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
+                    { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
+                    { id: 'calendar', name: 'Calendar & Tasks', icon: <CalendarIcon className="w-5 h-5" /> },
+                    { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
+                    { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },
+                    { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
+                    { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
+                        ? 'bg-primary-100 text-primary-900'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        } `}
+                    >
+                      <span className="mr-3">{item.icon}</span>
+                      {item.name}
+                    </button>
+                  ))}
+                </nav>
               </div>
-              <button onClick={() => setViewOffersModal(false)} className="text-gray-500 hover:text-gray-700">
-                ✕
-              </button>
-            </div>
 
-            <div className="space-y-4">
-              {currentOffers.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No offers received yet.</p>
-                </div>
-              ) : (
-                currentOffers.map((offer) => (
-                  <div key={offer._id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-semibold text-lg text-gray-900">
-                          {offer.provider?.name || offer.buyer?.name || offer.providerName || offer.buyerName || 'User'}
-                        </h4>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                          offer.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                          {offer.status.toUpperCase()}
-                        </span>
-                      </div>
-                      <p className="text-gray-600">Bid Amount: <span className="font-bold text-green-600">{offer.bidAmount}</span></p>
-                      {offer.quantityRequested && (
-                        <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested} Kg</span></p>
-                      )}
-                      {offer.pricePerUnit && (
-                        <p className="text-sm text-gray-600">Price/Unit: <span className="font-semibold">₹{offer.pricePerUnit}</span></p>
-                      )}
-                      <p className="text-sm text-gray-500 mt-1">{new Date(offer.createdAt).toLocaleDateString()}</p>
-                    </div>
-
-                    <div className="flex flex-col space-y-2">
-                      <button
-                        onClick={() => handleStartChat(offer._id)}
-                        className="flex items-center justify-center w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-                      >
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        {offer.offerType === 'service' ? 'Chat with Provider' : 'Chat with Buyer'}
-                      </button>
-                      {offer.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => handleAcceptOffer(offer)}
-                            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors"
-                          >
-                            Accept Bid
-                          </button>
-                          <button
-                            onClick={() => handleRejectOffer(offer._id)}
-                            className="border border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 px-4 rounded-lg transition-colors"
-                          >
-                            Reject Bid
-                          </button>
-                        </>
-                      )}
-                      {offer.status === 'accepted' && (
-                        <span className="text-green-600 font-bold flex items-center">
-                          Accepted ✅
-                        </span>
-                      )}
-                      {offer.status === 'rejected' && (
-                        <span className="text-red-600 font-bold flex items-center">
-                          Rejected ❌
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Sale Detail Modal */}
-      {showSaleDetailModal && selectedSaleDetail && printMode === 'none' && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl max-w-2xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto"
-          >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-green-600 to-green-700 p-6 rounded-t-2xl text-white">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-2xl font-bold mb-1">Sale Details</h3>
-                  <p className="text-green-100 text-sm">Complete order information</p>
-                </div>
+              <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                 <button
-                  onClick={() => setShowSaleDetailModal(false)}
-                  className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                  onClick={handleSignOut}
+                  className="w-full flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
                 >
-                  <span className="text-2xl">✕</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Crop Information */}
-              <div className="bg-green-50 rounded-xl p-5 border border-green-100">
-                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
-                  <Leaf className="w-5 h-5 mr-2 text-green-600" />
-                  Crop Information
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Crop Name</p>
-                    <p className="font-semibold text-gray-900">{selectedSaleDetail.crop?.name || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Quantity Sold</p>
-                    <p className="font-semibold text-gray-900">{selectedSaleDetail.quantityRequested || selectedSaleDetail.crop?.quantity || 'N/A'} Kg</p>
-                  </div>
-                  {selectedSaleDetail.pricePerUnit && (
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Price per Unit</p>
-                      <p className="font-semibold text-green-700">₹{selectedSaleDetail.pricePerUnit}</p>
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Total Sale Price</p>
-                    <p className="font-bold text-green-700 text-lg">{selectedSaleDetail.bidAmount}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Buyer Information */}
-              <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
-                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
-                  <User className="w-5 h-5 mr-2 text-blue-600" />
-                  Buyer Information
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Buyer Name</p>
-                    <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider?.name || selectedSaleDetail.buyer?.name || 'Unknown Buyer'}</p>
-                  </div>
-                  {selectedSaleDetail.serviceProvider?.phone && (
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Contact</p>
-                      <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider.phone}</p>
-                    </div>
-                  )}
-                  {selectedSaleDetail.serviceProvider?.location && (
-                    <div className="col-span-2">
-                      <p className="text-sm text-gray-600 mb-1">Location</p>
-                      <p className="font-semibold text-gray-900 flex items-center">
-                        <MapPin className="w-4 h-4 mr-1 text-gray-400" />
-                        {selectedSaleDetail.serviceProvider.location}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Transaction Details */}
-              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
-                  <FileText className="w-5 h-5 mr-2 text-gray-600" />
-                  Transaction Details
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Order ID</p>
-                    <p className="font-mono text-sm font-semibold text-gray-900">#{selectedSaleDetail._id.slice(-8).toUpperCase()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Status</p>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
-                      <CheckCircle className="w-3 h-3 mr-1" />
-                      SOLD
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Sale Date</p>
-                    <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Sale Time</p>
-                    <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional Notes */}
-              {selectedSaleDetail.notes && (
-                <div className="bg-yellow-50 rounded-xl p-5 border border-yellow-100">
-                  <h4 className="font-bold text-gray-900 mb-2 flex items-center">
-                    <AlertCircle className="w-5 h-5 mr-2 text-yellow-600" />
-                    Notes
-                  </h4>
-                  <p className="text-gray-700 text-sm">{selectedSaleDetail.notes}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="border-t border-gray-200 p-6 bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
-              <button
-                onClick={() => setShowSaleDetailModal(false)}
-                className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => handleGenerateBill(selectedSaleDetail)}
-                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center"
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Bill Now
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Sign Out Confirmation Modal */}
-      {showSignOutConfirm && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <LogOut className="w-8 h-8 text-red-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
-              <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
-
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => setShowSignOutConfirm(false)}
-                  className="flex-1 btn-outline py-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmSignOut}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
+                  <LogOut className="w-5 h-5 mr-3" />
                   Sign Out
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
+
+          <div className="flex-1 lg:ml-0">
+            <main className="py-6 px-4 sm:px-6 lg:px-8">
+              {renderContent()}
+            </main>
+          </div>
         </div>
-      )}
 
-      {/* Task Creation Modal */}
-      {isTaskModalOpen && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Add New Task</h3>
-              <button onClick={() => setIsTaskModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-                ✕
-              </button>
-            </div>
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-            <form onSubmit={handleCreateTask} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
-                <input
-                  type="text"
-                  required
-                  value={taskForm.title}
-                  onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="e.g. Add Urea Fertilizer"
-                />
+        {/* View Offers Modal */}
+        {viewOffersModal && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 shadow-2xl overflow-y-auto max-h-[80vh]"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">Received Offers</h3>
+                  <p className="text-gray-600">
+                    {selectedRequestForOffers ? `For: ${selectedRequestForOffers.type} (${selectedRequestForOffers.budget || 'No Budget'})` :
+                      selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity} Kg)` :
+                        'All Offers'}
+                  </p>
+                </div>
+                <button onClick={() => setViewOffersModal(false)} className="text-gray-500 hover:text-gray-700">
+                  ✕
+                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                {currentOffers.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No offers received yet.</p>
+                  </div>
+                ) : (
+                  currentOffers.map((offer) => (
+                    <div key={offer._id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-semibold text-lg text-gray-900">
+                            {offer.provider?.name || offer.buyer?.name || offer.providerName || offer.buyerName || 'User'}
+                          </h4>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                            offer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                            {offer.status.toUpperCase()}
+                          </span>
+                        </div>
+                        <p className="text-gray-600">Bid Amount: <span className="font-bold text-green-600">{offer.bidAmount}</span></p>
+                        {offer.quantityRequested && (
+                          <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested} Kg</span></p>
+                        )}
+                        {offer.pricePerUnit && (
+                          <p className="text-sm text-gray-600">Price/Unit: <span className="font-semibold">₹{offer.pricePerUnit}</span></p>
+                        )}
+                        <p className="text-sm text-gray-500 mt-1">{new Date(offer.createdAt).toLocaleDateString()}</p>
+                      </div>
+
+                      <div className="flex flex-col space-y-2">
+                        <button
+                          onClick={() => handleStartChat(offer._id)}
+                          className="flex items-center justify-center w-full px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          {offer.offerType === 'service' ? 'Chat with Provider' : 'Chat with Buyer'}
+                        </button>
+                        {offer.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={() => handleAcceptOffer(offer)}
+                              className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors"
+                            >
+                              Accept Bid
+                            </button>
+                            <button
+                              onClick={() => handleRejectOffer(offer._id)}
+                              className="border border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 px-4 rounded-lg transition-colors"
+                            >
+                              Reject Bid
+                            </button>
+                          </>
+                        )}
+                        {offer.status === 'accepted' && (
+                          <span className="text-green-600 font-bold flex items-center">
+                            Accepted ✅
+                          </span>
+                        )}
+                        {offer.status === 'rejected' && (
+                          <span className="text-red-600 font-bold flex items-center">
+                            Rejected ❌
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Sale Detail Modal */}
+        {showSaleDetailModal && selectedSaleDetail && printMode === 'none' && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-2xl max-w-2xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto"
+            >
+              {/* Header */}
+              <div className="bg-gradient-to-r from-green-600 to-green-700 p-6 rounded-t-2xl text-white">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-1">Sale Details</h3>
+                    <p className="text-green-100 text-sm">Complete order information</p>
+                  </div>
+                  <button
+                    onClick={() => setShowSaleDetailModal(false)}
+                    className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                  >
+                    <span className="text-2xl">✕</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 space-y-6">
+                {/* Crop Information */}
+                <div className="bg-green-50 rounded-xl p-5 border border-green-100">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                    <Leaf className="w-5 h-5 mr-2 text-green-600" />
+                    Crop Information
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Crop Name</p>
+                      <p className="font-semibold text-gray-900">{selectedSaleDetail.crop?.name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Quantity Sold</p>
+                      <p className="font-semibold text-gray-900">{selectedSaleDetail.quantityRequested || selectedSaleDetail.crop?.quantity || 'N/A'} Kg</p>
+                    </div>
+                    {selectedSaleDetail.pricePerUnit && (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Price per Unit</p>
+                        <p className="font-semibold text-green-700">₹{selectedSaleDetail.pricePerUnit}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Total Sale Price</p>
+                      <p className="font-bold text-green-700 text-lg">{selectedSaleDetail.bidAmount}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buyer Information */}
+                <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                    <User className="w-5 h-5 mr-2 text-blue-600" />
+                    Buyer Information
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Buyer Name</p>
+                      <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider?.name || selectedSaleDetail.buyer?.name || 'Unknown Buyer'}</p>
+                    </div>
+                    {selectedSaleDetail.serviceProvider?.phone && (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Contact</p>
+                        <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider.phone}</p>
+                      </div>
+                    )}
+                    {selectedSaleDetail.serviceProvider?.location && (
+                      <div className="col-span-2">
+                        <p className="text-sm text-gray-600 mb-1">Location</p>
+                        <p className="font-semibold text-gray-900 flex items-center">
+                          <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                          {selectedSaleDetail.serviceProvider.location}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Transaction Details */}
+                <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                    <FileText className="w-5 h-5 mr-2 text-gray-600" />
+                    Transaction Details
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Order ID</p>
+                      <p className="font-mono text-sm font-semibold text-gray-900">#{selectedSaleDetail._id.slice(-8).toUpperCase()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Status</p>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        SOLD
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Sale Date</p>
+                      <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Sale Time</p>
+                      <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Notes */}
+                {selectedSaleDetail.notes && (
+                  <div className="bg-yellow-50 rounded-xl p-5 border border-yellow-100">
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2 text-yellow-600" />
+                      Notes
+                    </h4>
+                    <p className="text-gray-700 text-sm">{selectedSaleDetail.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-gray-200 p-6 bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowSaleDetailModal(false)}
+                  className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => handleGenerateBill(selectedSaleDetail)}
+                  className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Bill Now
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Sign Out Confirmation Modal */}
+        {showSignOutConfirm && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <LogOut className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
+                <p className="text-gray-600 mb-6">Are you sure you want to sign out? You'll be redirected to the home page.</p>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowSignOutConfirm(false)}
+                    className="flex-1 btn-outline py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmSignOut}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Task Creation Modal */}
+        {isTaskModalOpen && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Add New Task</h3>
+                <button onClick={() => setIsTaskModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateTask} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
                   <input
-                    type="date"
+                    type="text"
                     required
-                    value={taskForm.date}
-                    onChange={(e) => setTaskForm({ ...taskForm, date: e.target.value })}
+                    value={taskForm.title}
+                    onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="e.g. Add Urea Fertilizer"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                      type="date"
+                      required
+                      value={taskForm.date}
+                      onChange={(e) => setTaskForm({ ...taskForm, date: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <select
+                      value={taskForm.type}
+                      onChange={(e) => setTaskForm({ ...taskForm, type: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                      <option value="general">General</option>
+                      <option value="field_work">Field Work</option>
+                      <option value="fertilizer">Fertilizer</option>
+                      <option value="harvest">Harvest</option>
+                      <option value="irrigation">Irrigation</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                  <select
-                    value={taskForm.type}
-                    onChange={(e) => setTaskForm({ ...taskForm, type: e.target.value })}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                  <textarea
+                    value={taskForm.description}
+                    onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
+                    rows={3}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  >
-                    <option value="general">General</option>
-                    <option value="field_work">Field Work</option>
-                    <option value="fertilizer">Fertilizer</option>
-                    <option value="harvest">Harvest</option>
-                    <option value="irrigation">Irrigation</option>
-                  </select>
+                    placeholder="Additional details..."
+                  />
                 </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
+                >
+                  Schedule Task
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Buyer Need Bid Modal */}
+        {needBidModalOpen && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Place Bid on Requirement</h3>
+                <button onClick={() => setNeedBidModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                  ✕
+                </button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                <textarea
-                  value={taskForm.description}
-                  onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Additional details..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
-              >
-                Schedule Task
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Buyer Need Bid Modal */}
-      {needBidModalOpen && (
-        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Place Bid on Requirement</h3>
-              <button onClick={() => setNeedBidModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-                ✕
-              </button>
-            </div>
-
-            {selectedNeed && (
-              <div className="bg-gray-50 p-4 rounded-lg mb-4 border border-gray-100">
-                <p className="font-semibold text-gray-800 text-lg mb-1">{selectedNeed.cropName}</p>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Qty: {selectedNeed.quantity} {selectedNeed.unit}</span>
-                  <span className="text-green-600 font-medium">Budget: ₹{selectedNeed.minPrice}-{selectedNeed.maxPrice}</span>
-                </div>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmitBid} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Price Per Unit (₹)</label>
-                <input
-                  type="number"
-                  required
-                  value={needBidForm.pricePerUnit}
-                  onChange={(e) => setNeedBidForm({ ...needBidForm, pricePerUnit: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg font-semibold"
-                  placeholder="e.g. 25"
-                />
-              </div>
-
-              {/* Auto-calculate Total */}
-              {selectedNeed && needBidForm.pricePerUnit && (
-                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-100">
-                  <span className="text-sm text-green-800 font-medium">Total Bid Value:</span>
-                  <span className="text-xl font-bold text-green-700">
-                    ₹{(parseFloat(needBidForm.pricePerUnit) * selectedNeed.quantity).toFixed(2)}
-                  </span>
+              {selectedNeed && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-4 border border-gray-100">
+                  <p className="font-semibold text-gray-800 text-lg mb-1">{selectedNeed.cropName}</p>
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Qty: {selectedNeed.quantity} {selectedNeed.unit}</span>
+                    <span className="text-green-600 font-medium">Budget: ₹{selectedNeed.minPrice}-{selectedNeed.maxPrice}</span>
+                  </div>
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
-                <textarea
-                  value={needBidForm.message}
-                  onChange={(e) => setNeedBidForm({ ...needBidForm, message: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g. I have 500kg of premium organic wheat ready for dispatch."
-                />
-              </div>
+              <form onSubmit={handleSubmitBid} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Your Price Per Unit (₹)</label>
+                  <input
+                    type="number"
+                    required
+                    value={needBidForm.pricePerUnit}
+                    onChange={(e) => setNeedBidForm({ ...needBidForm, pricePerUnit: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg font-semibold"
+                    placeholder="e.g. 25"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
-              >
-                <IndianRupee className="w-5 h-5 mr-2" />
-                Submit Bid
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      )}
+                {/* Auto-calculate Total */}
+                {selectedNeed && needBidForm.pricePerUnit && (
+                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-100">
+                    <span className="text-sm text-green-800 font-medium">Total Bid Value:</span>
+                    <span className="text-xl font-bold text-green-700">
+                      ₹{(parseFloat(needBidForm.pricePerUnit) * selectedNeed.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                  <textarea
+                    value={needBidForm.message}
+                    onChange={(e) => setNeedBidForm({ ...needBidForm, message: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="e.g. I have 500kg of premium organic wheat ready for dispatch."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+                >
+                  <IndianRupee className="w-5 h-5 mr-2" />
+                  Submit Bid
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
