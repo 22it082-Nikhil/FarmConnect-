@@ -1454,7 +1454,7 @@ const FarmerDashboard = () => {
     const activities = [
       ...crops.map(c => ({
         type: 'crop',
-        message: `Listed ${c.quantity} of ${c.name}`,
+        message: `Listed ${c.quantity} Kg of ${c.name}`,
         time: new Date(c.createdAt).toLocaleDateString(),
         sortTime: new Date(c.createdAt).getTime(),
         status: 'success'
@@ -1841,8 +1841,15 @@ const FarmerDashboard = () => {
                     type="text"
                     name="quantity"
                     value={cropForm.quantity}
-                    onChange={handleInputChange}
-                    placeholder="e.g. 500 kg"
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Extract only numbers and decimal point
+                      const numericValue = value.replace(/[^0-9.]/g, '')
+                      // Format as {number} Kg if there's a value
+                      const formattedValue = numericValue ? `${numericValue} Kg` : ''
+                      setCropForm({ ...cropForm, quantity: formattedValue })
+                    }}
+                    placeholder="e.g. 100"
                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                     required
                   />
@@ -2574,7 +2581,7 @@ const FarmerDashboard = () => {
                 <td>${new Date(sale.createdAt).toLocaleDateString()}</td>
                 <td><strong>${sale.crop?.name || (sale.buyerNeed && typeof sale.buyerNeed === 'object' ? sale.buyerNeed.cropName : 'Buyer Fulfillment') || 'Unknown'}</strong></td>
                 <td>${sale.buyer?.name || (sale.buyerNeed && typeof sale.buyerNeed === 'object' && sale.buyerNeed.buyer?.name) || sale.buyerName || 'Direct Buyer'}</td>
-                <td>${sale.quantityRequested} ${sale.crop?.unit || (sale.buyerNeed && typeof sale.buyerNeed === 'object' ? sale.buyerNeed.unit : 'units')}</td>
+                <td>${sale.quantityRequested} Kg</td>
                 <td style="font-weight: bold; color: #16a34a;">₹${sale.bidAmount?.toString().replace(/[₹$]/g, '')}</td>
               </tr>
             `).join('') : '<tr><td colspan="5" style="text-align:center; padding: 20px;">No crop sales recorded.</td></tr>'}
