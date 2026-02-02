@@ -8,7 +8,7 @@ import {
   TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
   FileText, Download, Plus, Search, MapPin,
   Bell, Home, Menu, User, MessageSquare,
-  Briefcase, Wrench, IndianRupee, Trash2, Award, Calendar as CalendarIcon, X
+  Briefcase, Wrench, IndianRupee, Trash2, Award, Calendar as CalendarIcon, X, Eye
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
@@ -29,6 +29,7 @@ const ServiceProviderDashboard = () => {
   const [bidFilter, setBidFilter] = useState<'pending' | 'accepted' | 'rejected'>('pending')
   const [toasts, setToasts] = useState<any[]>([])
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [selectedBidForDetail, setSelectedBidForDetail] = useState<any>(null)
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -1273,36 +1274,50 @@ const ServiceProviderDashboard = () => {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${bid.status === 'accepted' ? 'bg-green-100' :
-                          bid.status === 'rejected' ? 'bg-red-100' :
-                            'bg-blue-100'
-                          }`}>
-                          {bid.status === 'accepted' ? <CheckCircle className="w-6 h-6 text-green-600" /> :
-                            bid.status === 'rejected' ? <Trash2 className="w-6 h-6 text-red-600" /> :
-                              <Briefcase className="w-6 h-6 text-blue-600" />}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${bid.status === 'accepted' ? 'bg-green-100' :
+                            bid.status === 'rejected' ? 'bg-red-100' :
+                              'bg-blue-100'
+                            }`}>
+                            {bid.status === 'accepted' ? <CheckCircle className="w-6 h-6 text-green-600" /> :
+                              bid.status === 'rejected' ? <Trash2 className="w-6 h-6 text-red-600" /> :
+                                <Briefcase className="w-6 h-6 text-blue-600" />}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg text-gray-900">{bid.serviceRequest?.type || 'Service'} Job</h3>
+                            <p className="text-sm text-gray-500 flex items-center mt-1">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Posted {new Date(bid.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{bid.serviceRequest?.type || 'Service'} Job</h3>
-                          <p className="text-sm text-gray-600">Posted: {new Date(bid.createdAt).toLocaleDateString()}</p>
-                        </div>
+                        <button
+                          onClick={() => setSelectedBidForDetail(bid)}
+                          className="flex items-center px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all text-sm font-medium shadow-sm"
+                        >
+                          <Eye className="w-4 h-4 mr-2 text-blue-500" />
+                          View Details
+                        </button>
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+
+                      {/* Grid Layout for Key Info */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
                         <div>
-                          <span className="text-gray-600">Your Bid:</span>
-                          <p className={`font-bold ${bid.status === 'accepted' ? 'text-green-700' : 'text-blue-600'}`}>{bid.bidAmount}</p>
+                          <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold block mb-1">Your Bid</span>
+                          <p className={`text-lg font-bold ${bid.status === 'accepted' ? 'text-green-700' : 'text-blue-600'}`}>{bid.bidAmount}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Budget:</span>
-                          <p className="font-medium">{bid.serviceRequest?.budget || 'N/A'}</p>
+                          <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold block mb-1">Farmer Budget</span>
+                          <p className="text-lg font-medium text-gray-700">{bid.serviceRequest?.budget || 'N/A'}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Location:</span>
-                          <p className="font-medium">{bid.serviceRequest?.location || 'Unknown'}</p>
+                          <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold block mb-1">Location</span>
+                          <p className="text-sm font-medium text-gray-700">{bid.serviceRequest?.location || 'Unknown'}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Status:</span>
-                          <span className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${bid.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold block mb-1">Status</span>
+                          <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold uppercase tracking-wide rounded-full ${bid.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                             bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
                               'bg-red-100 text-red-800'
                             }`}>
@@ -2188,8 +2203,125 @@ const ServiceProviderDashboard = () => {
           </motion.div>
         </div>
       )}
+      {/* Bid Details Modal */}
+      {selectedBidForDetail && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden"
+          >
+            {/* Modal Header */}
+            <div className="bg-blue-600 p-6 flex justify-between items-start">
+              <div>
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                  {selectedBidForDetail.serviceRequest?.type || 'Service'} Job
+                </h2>
+                <div className="flex items-center text-blue-100 mt-2 text-sm">
+                  <Clock className="w-4 h-4 mr-1" />
+                  Posted {new Date(selectedBidForDetail.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedBidForDetail(null)}
+                className="text-white hover:bg-blue-700/50 p-2 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
 
-      {/* Sign Out Confirmation Modal */}
+            {/* Modal Body */}
+            <div className="p-8 space-y-8">
+
+              {/* Description Section */}
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {selectedBidForDetail.serviceRequest?.description || 'No description provided.'}
+                </p>
+              </div>
+
+              {/* Key Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Location & Farmer */}
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="flex items-center text-gray-500 text-sm font-semibold mb-1">
+                      <MapPin className="w-4 h-4 mr-2" /> Location
+                    </h4>
+                    <p className="font-medium text-gray-900 border-l-2 border-blue-500 pl-3">
+                      {selectedBidForDetail.serviceRequest?.location || 'Unknown Location'}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="flex items-center text-gray-500 text-sm font-semibold mb-1">
+                      <User className="w-4 h-4 mr-2" /> Posted By
+                    </h4>
+                    <p className="font-medium text-gray-900 border-l-2 border-blue-500 pl-3">
+                      {selectedBidForDetail.farmer?.name || 'Farmer'} <span className="text-gray-400 text-sm ml-1">(#{selectedBidForDetail.farmer?._id?.slice(-4) || 'ID'})</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Dates & Duration */}
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="flex items-center text-gray-500 text-sm font-semibold mb-1">
+                      <CalendarIcon className="w-4 h-4 mr-2" /> Schedule
+                    </h4>
+                    <div className="font-medium text-gray-900 border-l-2 border-green-500 pl-3">
+                      <p>Start: {selectedBidForDetail.serviceRequest?.scheduledDate ? new Date(selectedBidForDetail.serviceRequest.scheduledDate).toLocaleDateString() : 'TBD'}</p>
+                      <p className="text-sm text-gray-500">End: {selectedBidForDetail.serviceRequest?.endDate ? new Date(selectedBidForDetail.serviceRequest.endDate).toLocaleDateString() : 'TBD'}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="flex items-center text-gray-500 text-sm font-semibold mb-1">
+                      <Clock className="w-4 h-4 mr-2" /> Duration
+                    </h4>
+                    <p className="font-medium text-gray-900 border-l-2 border-green-500 pl-3">
+                      {selectedBidForDetail.serviceRequest?.duration || 'Flexible'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Financials Strip */}
+              <div className="pt-6 border-t border-gray-100">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-3 rounded-lg bg-blue-50">
+                    <span className="block text-xs text-blue-600 font-bold uppercase">Your Bid</span>
+                    <span className="block text-xl font-bold text-gray-900">{selectedBidForDetail.bidAmount}</span>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-gray-50">
+                    <span className="block text-xs text-gray-500 font-bold uppercase">Budget</span>
+                    <span className="block text-xl font-bold text-gray-700">{selectedBidForDetail.serviceRequest?.budget || 'N/A'}</span>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-gray-50">
+                    <span className="block text-xs text-gray-500 font-bold uppercase">Status</span>
+                    <span className={`block text-lg font-bold uppercase ${selectedBidForDetail.status === 'accepted' ? 'text-green-600' :
+                        selectedBidForDetail.status === 'pending' ? 'text-yellow-600' : 'text-red-600'
+                      }`}>
+                      {selectedBidForDetail.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-gray-50 p-4 flex justify-end">
+              <button
+                onClick={() => setSelectedBidForDetail(null)}
+                className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {showSignOutConfirm && (
         <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
           <motion.div

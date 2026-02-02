@@ -2146,14 +2146,20 @@ const FarmerDashboard = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
-                    <input
-                      type="text"
-                      name="budget"
-                      value={serviceForm.budget}
-                      onChange={handleServiceInputChange}
-                      placeholder="e.g. ₹5000"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500">₹</span>
+                      </div>
+                      <input
+                        type="number"
+                        name="budget"
+                        value={serviceForm.budget}
+                        onChange={handleServiceInputChange}
+                        placeholder="5000"
+                        className="w-full pl-7 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        min="0"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
