@@ -1879,7 +1879,8 @@ const ServiceProviderDashboard = () => {
 
     // Farmer Details for "To" (Bill To)
     const billToName = invoiceData.farmer?.name || 'Valued Farmer';
-    const billToAddress = invoiceData.farmer?.location || invoiceData.serviceRequest?.location || '';
+    const billToAddress = invoiceData.farmer?.location ||
+      (invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.location : invoiceData.serviceRequest?.location) || '';
     const billToPhone = invoiceData.farmer?.phone || '';
 
     return (
@@ -1932,7 +1933,7 @@ const ServiceProviderDashboard = () => {
           {/* Vehicle / Type Info Line */}
           <div className="border-b-2 border-black flex text-sm">
             <div className="w-1/2 border-r-2 border-black p-1 px-2">
-              <span className="font-bold">Service Type:</span> {invoiceData.serviceRequest?.type || 'Service'}
+              <span className="font-bold">Service Type:</span> {invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.type : invoiceData.serviceRequest?.type || 'Service'}
             </div>
             <div className="w-1/2 p-1 px-2">
               <span className="font-bold">Job ID:</span> #{invoiceData._id.slice(-4)}
@@ -1963,15 +1964,17 @@ const ServiceProviderDashboard = () => {
               <div className="flex">
                 <div className="w-16 p-2 text-center">1</div>
                 <div className="flex-grow p-2">
-                  <p className="font-bold uppercase mb-1">{invoiceData.serviceRequest?.type} Service</p>
-                  <p className="ml-4 italic mb-1">- {invoiceData.serviceRequest?.description}</p>
+                  <p className="font-bold uppercase mb-1">{invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.type : invoiceData.serviceRequest?.type} Service</p>
+                  <p className="ml-4 italic mb-1">- {invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.description : invoiceData.serviceRequest?.description}</p>
                   <div className="ml-4 text-xs mt-2 space-y-0.5">
-                    <p><span className="font-semibold">Duration:</span> {invoiceData.serviceRequest?.duration}</p>
-                    {invoiceData.serviceRequest?.scheduledDate && (
-                      <p><span className="font-semibold">Start:</span> {new Date(invoiceData.serviceRequest.scheduledDate).toLocaleDateString()}</p>
+                    <p><span className="font-semibold">Duration:</span> {invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.duration : invoiceData.serviceRequest?.duration}</p>
+
+                    {(invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.availabilityDate : invoiceData.serviceRequest?.scheduledDate) && (
+                      <p><span className="font-semibold">Start:</span> {new Date(invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.availabilityDate : invoiceData.serviceRequest?.scheduledDate).toLocaleDateString()}</p>
                     )}
-                    {invoiceData.serviceRequest?.endDate && (
-                      <p><span className="font-semibold">End:</span> {new Date(invoiceData.serviceRequest.endDate).toLocaleDateString()}</p>
+
+                    {(invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.endDate : invoiceData.serviceRequest?.endDate) && (
+                      <p><span className="font-semibold">End:</span> {new Date(invoiceData.offerType === 'broadcast_bid' ? invoiceData.serviceBroadcast?.endDate : invoiceData.serviceRequest?.endDate).toLocaleDateString()}</p>
                     )}
                   </div>
                 </div>
@@ -3043,7 +3046,7 @@ const ServiceProviderDashboard = () => {
             <div className="bg-blue-600 p-6 flex justify-between items-start">
               <div>
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                  {selectedBidForDetail.serviceRequest?.type || 'Service'} Job
+                  {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.type : selectedBidForDetail.serviceRequest?.type) || 'Service'} Job
                 </h2>
                 <div className="flex items-center text-blue-100 mt-2 text-sm">
                   <Clock className="w-4 h-4 mr-1" />
@@ -3065,7 +3068,7 @@ const ServiceProviderDashboard = () => {
               <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {selectedBidForDetail.serviceRequest?.description || 'No description provided.'}
+                  {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.description : selectedBidForDetail.serviceRequest?.description) || 'No description provided.'}
                 </p>
               </div>
 
@@ -3078,7 +3081,7 @@ const ServiceProviderDashboard = () => {
                       <MapPin className="w-4 h-4 mr-2" /> Location
                     </h4>
                     <p className="font-medium text-gray-900 border-l-2 border-blue-500 pl-3">
-                      {selectedBidForDetail.serviceRequest?.location || 'Unknown Location'}
+                      {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.location : selectedBidForDetail.serviceRequest?.location) || 'Unknown Location'}
                     </p>
                   </div>
                   <div>
@@ -3098,8 +3101,8 @@ const ServiceProviderDashboard = () => {
                       <CalendarIcon className="w-4 h-4 mr-2" /> Schedule
                     </h4>
                     <div className="font-medium text-gray-900 border-l-2 border-green-500 pl-3">
-                      <p>Start: {selectedBidForDetail.serviceRequest?.scheduledDate ? new Date(selectedBidForDetail.serviceRequest.scheduledDate).toLocaleDateString() : 'TBD'}</p>
-                      <p className="text-sm text-gray-500">End: {selectedBidForDetail.serviceRequest?.endDate ? new Date(selectedBidForDetail.serviceRequest.endDate).toLocaleDateString() : 'TBD'}</p>
+                      <p>Start: {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.availabilityDate : selectedBidForDetail.serviceRequest?.scheduledDate) ? new Date(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.availabilityDate : selectedBidForDetail.serviceRequest?.scheduledDate).toLocaleDateString() : 'TBD'}</p>
+                      <p className="text-sm text-gray-500">End: {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.endDate : selectedBidForDetail.serviceRequest?.endDate) ? new Date(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.endDate : selectedBidForDetail.serviceRequest?.endDate).toLocaleDateString() : 'TBD'}</p>
                     </div>
                   </div>
                   <div>
@@ -3107,7 +3110,7 @@ const ServiceProviderDashboard = () => {
                       <Clock className="w-4 h-4 mr-2" /> Duration
                     </h4>
                     <p className="font-medium text-gray-900 border-l-2 border-green-500 pl-3">
-                      {selectedBidForDetail.serviceRequest?.duration || 'Flexible'}
+                      {(selectedBidForDetail.offerType === 'broadcast_bid' ? selectedBidForDetail.serviceBroadcast?.duration : selectedBidForDetail.serviceRequest?.duration) || 'Flexible'}
                     </p>
                   </div>
                 </div>
@@ -3122,7 +3125,11 @@ const ServiceProviderDashboard = () => {
                   </div>
                   <div className="text-center p-3 rounded-lg bg-gray-50">
                     <span className="block text-xs text-gray-500 font-bold uppercase">Budget</span>
-                    <span className="block text-xl font-bold text-gray-700">{selectedBidForDetail.serviceRequest?.budget ? `₹${selectedBidForDetail.serviceRequest.budget}` : 'N/A'}</span>
+                    <span className="block text-xl font-bold text-gray-700">
+                      {selectedBidForDetail.offerType === 'broadcast_bid'
+                        ? (selectedBidForDetail.serviceBroadcast?.budget ? `₹${selectedBidForDetail.serviceBroadcast.budget}` : 'N/A')
+                        : (selectedBidForDetail.serviceRequest?.budget ? `₹${selectedBidForDetail.serviceRequest.budget}` : 'N/A')}
+                    </span>
                   </div>
                   <div className="text-center p-3 rounded-lg bg-gray-50">
                     <span className="block text-xs text-gray-500 font-bold uppercase">Status</span>
@@ -3156,8 +3163,9 @@ const ServiceProviderDashboard = () => {
               )}
             </div>
           </motion.div>
-        </div>
+        </div >
       )}
+
 
       {showSignOutConfirm && (
         <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
@@ -3191,7 +3199,7 @@ const ServiceProviderDashboard = () => {
           </motion.div>
         </div>
       )}
-    </div>
+    </div >
   )
 }
 
