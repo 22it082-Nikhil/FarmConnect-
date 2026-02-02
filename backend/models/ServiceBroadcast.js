@@ -40,6 +40,10 @@ const ServiceBroadcastSchema = new mongoose.Schema({
         type: Date,
         required: false // Optional end date of availability
     },
+    duration: {
+        type: String, // e.g. "2 days", "1 week"
+        required: false
+    },
     status: {
         type: String,
         enum: ['active', 'filled', 'expired', 'cancelled'],

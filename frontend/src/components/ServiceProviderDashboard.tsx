@@ -6,7 +6,7 @@ import {
   // Navigation and UI icons for service provider dashboard
   Truck, Users, BarChart3, TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
   FileText, Download, Plus, Search, MapPin, Bell, Home, Menu, User, MessageSquare,
-  Briefcase, Wrench, IndianRupee, Trash, Trash2, Award, Calendar as CalendarIcon, X, Eye, ArrowLeft
+  Briefcase, Wrench, IndianRupee, Trash, Trash2, Award, Calendar as CalendarIcon, X, Eye, ArrowLeft, ChevronDown
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
@@ -101,13 +101,15 @@ const ServiceProviderDashboard = () => {
   const [viewingBidsForBroadcast, setViewingBidsForBroadcast] = useState<string | null>(null)
   const [broadcastBids, setBroadcastBids] = useState<any[]>([])
   const [broadcastForm, setBroadcastForm] = useState({
-    title: '',
     type: 'Vehicle',
     description: '',
     location: '',
     budget: '',
     availabilityDate: '',
-    endDate: ''
+    endDate: '',
+    duration: '',
+    status: 'pending',
+    locationMode: 'city' // 'city' or 'gps'
   })
 
   // Fetch Broadcasts
@@ -175,8 +177,10 @@ const ServiceProviderDashboard = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          provider: user._id,
-          ...broadcastForm,
+          // Auto-generate title if not present (as form doesn't show it)
+          title: `${broadcastForm.type} Request`,
+          duration: broadcastForm.duration,
+          status: broadcastForm.status.toLowerCase(),
           budget: parseFloat(broadcastForm.budget)
         })
       })
@@ -184,13 +188,15 @@ const ServiceProviderDashboard = () => {
       if (res.ok) {
         setIsBroadcastModalOpen(false)
         setBroadcastForm({
-          title: '',
           type: 'Vehicle',
           description: '',
           location: '',
           budget: '',
           availabilityDate: '',
-          endDate: ''
+          endDate: '',
+          duration: '',
+          status: 'pending',
+          locationMode: 'city'
         })
         fetchBroadcasts()
         alert('Broadcast published successfully!')
@@ -368,89 +374,168 @@ const ServiceProviderDashboard = () => {
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Create Service Broadcast</h3>
-                  <button onClick={() => setIsBroadcastModalOpen(false)} className="text-gray-400 hover:text-gray-500">
-                    <X className="w-6 h-6" />
-                  </button>
+                <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden mx-4">
+                  {/* Header */}
+                  <div className="flex justify-between items-center p-6 border-b border-gray-100">
+                    <h3 className="text-xl font-bold text-gray-900">New Service Request</h3>
+                    <button onClick={() => setIsBroadcastModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreateBroadcast} className="p-6 space-y-6">
+                    {/* Request Type */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Request Type</label>
+                      <div className="relative">
+                        <select
+                          value={broadcastForm.type}
+                          onChange={(e) => setBroadcastForm({ ...broadcastForm, type: e.target.value })}
+                          className="w-full p-3 border border-gray-300 rounded-xl appearance-none bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                        >
+                          <option value="Vehicle">Vehicle Request</option>
+                          <option value="Manpower">Manpower Request</option>
+                          <option value="Equipment">Equipment Request</option>
+                          <option value="Storage">Storage Request</option>
+                          <option value="Processing">Processing Request</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                      <textarea
+                        required
+                        value={broadcastForm.description}
+                        onChange={(e) => setBroadcastForm({ ...broadcastForm, description: e.target.value })}
+                        placeholder="Describe what you need..."
+                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow min-h-[100px]"
+                      />
+                    </div>
+
+                    {/* Location Tabs & Input */}
+                    <div>
+                      <div className="flex bg-gray-100 p-1 rounded-xl mb-3">
+                        <button
+                          type="button"
+                          onClick={() => setBroadcastForm({ ...broadcastForm, locationMode: 'city' })}
+                          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${broadcastForm.locationMode === 'city' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                          City / Place Name
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBroadcastForm({ ...broadcastForm, locationMode: 'gps' })}
+                          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${broadcastForm.locationMode === 'gps' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                          GPS Coordinates
+                        </button>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                        <input
+                          type="text"
+                          required
+                          value={broadcastForm.location}
+                          onChange={(e) => setBroadcastForm({ ...broadcastForm, location: e.target.value })}
+                          placeholder={broadcastForm.locationMode === 'city' ? "e.g. Nagpur, Maharashtra" : "e.g. 21.1458, 79.0882"}
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Duration & Start Date */}
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Duration</label>
+                        <input
+                          type="text"
+                          value={broadcastForm.duration}
+                          onChange={(e) => setBroadcastForm({ ...broadcastForm, duration: e.target.value })}
+                          placeholder="e.g. 2 days"
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            required
+                            value={broadcastForm.availabilityDate}
+                            onChange={(e) => setBroadcastForm({ ...broadcastForm, availabilityDate: e.target.value })}
+                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                          />
+                          <CalendarIcon className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* End Date & Budget */}
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            value={broadcastForm.endDate}
+                            onChange={(e) => setBroadcastForm({ ...broadcastForm, endDate: e.target.value })}
+                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                          />
+                          <CalendarIcon className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Budget</label>
+                        <input
+                          type="number"
+                          required
+                          value={broadcastForm.budget}
+                          onChange={(e) => setBroadcastForm({ ...broadcastForm, budget: e.target.value })}
+                          placeholder="e.g. ₹5000"
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                      <div className="relative">
+                        <select
+                          value={broadcastForm.status}
+                          onChange={(e) => setBroadcastForm({ ...broadcastForm, status: e.target.value })}
+                          className="w-full p-3 border border-gray-300 rounded-xl appearance-none bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="active">Active</option>
+                          <option value="cancelled">Cancelled</option>
+                          <option value="completed">Completed</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex space-x-4 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsBroadcastModalOpen(false)}
+                        className="flex-1 py-3 border border-green-600 text-green-600 rounded-xl font-bold hover:bg-green-50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg shadow-green-200"
+                      >
+                        Post Request
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                <form onSubmit={handleCreateBroadcast} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Service Type</label>
-                    <select
-                      value={broadcastForm.type}
-                      onChange={(e) => setBroadcastForm({ ...broadcastForm, type: e.target.value })}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                    >
-                      <option value="Vehicle">Vehicle</option>
-                      <option value="Manpower">Manpower</option>
-                      <option value="Equipment">Equipment</option>
-                      <option value="Storage">Storage</option>
-                      <option value="Processing">Processing</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Title</label>
-                    <input
-                      type="text"
-                      required
-                      value={broadcastForm.title}
-                      onChange={(e) => setBroadcastForm({ ...broadcastForm, title: e.target.value })}
-                      placeholder="e.g. Tractor Available for Rent"
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea
-                      required
-                      value={broadcastForm.description}
-                      onChange={(e) => setBroadcastForm({ ...broadcastForm, description: e.target.value })}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Location</label>
-                      <input
-                        type="text"
-                        required
-                        value={broadcastForm.location}
-                        onChange={(e) => setBroadcastForm({ ...broadcastForm, location: e.target.value })}
-                        placeholder="City/Village"
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Budget (₹)</label>
-                      <input
-                        type="number"
-                        required
-                        value={broadcastForm.budget}
-                        onChange={(e) => setBroadcastForm({ ...broadcastForm, budget: e.target.value })}
-                        placeholder="e.g. 5000"
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Availability Date</label>
-                    <input
-                      type="date"
-                      required
-                      value={broadcastForm.availabilityDate}
-                      onChange={(e) => setBroadcastForm({ ...broadcastForm, availabilityDate: e.target.value })}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition"
-                  >
-                    Publish Broadcast
-                  </button>
-                </form>
               </div>
             </div>
           </div>
