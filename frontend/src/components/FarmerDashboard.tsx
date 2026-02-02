@@ -120,8 +120,15 @@ const FarmerDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl p-8 text-white"
       >
-        <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
-        <p className="text-teal-100 text-lg">Browse services directly offered by providers (Reverse Bidding)</p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
+            <p className="text-teal-100 text-lg">Browse services directly offered by providers (Reverse Bidding)</p>
+          </div>
+          <div className="bg-white/20 p-3 rounded-lg backdrop-blur-sm">
+            <TrendingUp className="w-8 h-8 text-white" />
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -136,59 +143,45 @@ const FarmerDashboard = () => {
               key={broadcast._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+              className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col"
             >
               <div className="flex justify-between items-start mb-4">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
-                  ${broadcast.type === 'Vehicle' ? 'bg-blue-100 text-blue-800' :
-                    broadcast.type === 'Manpower' ? 'bg-purple-100 text-purple-800' :
-                      'bg-orange-100 text-orange-800'}`}>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">{broadcast.title}</h3>
+                  <p className="text-sm text-gray-500">Posted: {new Date(broadcast.createdAt).toLocaleDateString()}</p>
+                </div>
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   {broadcast.type}
                 </span>
-                <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-md">
-                  Posted: {new Date(broadcast.createdAt).toLocaleDateString()}
-                </span>
               </div>
 
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                  {broadcast.provider?.avatar ? (
-                    <img src={broadcast.provider.avatar} alt="Provider" className="w-full h-full object-cover" />
-                  ) : (
-                    <User className="w-6 h-6 text-gray-400" />
-                  )}
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-gray-900">{broadcast.provider?.name || 'Service Provider'}</h4>
-                  <p className="text-xs text-gray-500">{broadcast.provider?.phone || 'Contact not listed'}</p>
-                </div>
-              </div>
-
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{broadcast.title}</h3>
-              <p className="text-gray-600 text-sm mb-4 line-clamp-3">{broadcast.description}</p>
-
-              <div className="space-y-2 mb-4 bg-gray-50 p-3 rounded-lg">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Location:</span>
+              <div className="space-y-3 mb-6 flex-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Location:</span>
                   <span className="font-medium text-gray-900">{broadcast.location}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Available:</span>
-                  <span className="font-medium text-gray-900">{new Date(broadcast.availabilityDate).toLocaleDateString()}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Rate:</span>
+                  <span className="font-medium text-green-600">₹{broadcast.budget}</span>
                 </div>
-                <div className="flex justify-between text-sm items-center">
-                  <span className="text-gray-500">Rate:</span>
-                  <span className="font-bold text-green-600 text-lg">₹{broadcast.budget}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Available:</span>
+                  <span className="font-medium text-red-600">{new Date(broadcast.availabilityDate).toLocaleDateString()}</span>
                 </div>
+                {broadcast.description && (
+                  <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded italic">"{broadcast.description}"</p>
+                )}
               </div>
 
-              <button
-                onClick={() => handlePlaceBid(broadcast)}
-                className="w-full bg-teal-600 text-white py-2 rounded-lg font-semibold hover:bg-teal-700 transition flex items-center justify-center"
-              >
-                <IndianRupee className="w-4 h-4 mr-2" />
-                Place Bid
-              </button>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <button
+                  onClick={() => handlePlaceBid(broadcast)}
+                  className="w-full bg-teal-600 text-white py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center"
+                >
+                  <IndianRupee className="w-4 h-4 mr-2" />
+                  Place Bid
+                </button>
+              </div>
             </motion.div>
           ))
         )}
