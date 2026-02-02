@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
 // Create a new offer
 router.post('/', async (req, res) => {
     try {
-        const { farmer, provider, buyer, crop, buyerNeed, serviceRequest, offerType, buyerName, providerName, pricePerUnit, quantityRequested, bidAmount, message } = req.body;
+        const { farmer, provider, buyer, crop, buyerNeed, serviceBroadcast, serviceRequest, offerType, buyerName, providerName, pricePerUnit, quantityRequested, bidAmount, message } = req.body;
 
         const newOffer = new Offer({
             farmer,
@@ -56,6 +56,7 @@ router.post('/', async (req, res) => {
             buyer,    // Save Buyer ID
             crop: crop || undefined,
             buyerNeed: buyerNeed || undefined,
+            serviceBroadcast: serviceBroadcast || undefined, // Save Service Broadcast ID
             serviceRequest: serviceRequest || undefined,
             offerType: offerType || 'crop',
             buyerName: buyerName || 'Local Buyer',
