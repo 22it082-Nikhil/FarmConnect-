@@ -4,11 +4,9 @@ import { useState, useEffect } from 'react' // For managing component state
 import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons for service provider dashboard
-  Truck, Users, BarChart3,
-  TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
-  FileText, Download, Plus, Search, MapPin,
-  Bell, Home, Menu, User, MessageSquare,
-  Briefcase, Wrench, IndianRupee, Trash2, Award, Calendar as CalendarIcon, X, Eye, ArrowLeft, ArrowRight
+  Truck, Users, BarChart3, TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
+  FileText, Download, Plus, Search, MapPin, Bell, Home, Menu, User, MessageSquare,
+  Briefcase, Wrench, IndianRupee, Trash, Trash2, Award, Calendar as CalendarIcon, X, Eye, ArrowLeft
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
@@ -218,22 +216,25 @@ const ServiceProviderDashboard = () => {
 
   const renderBroadcasts = () => (
     <div className="space-y-6">
+      {/* Header matching Post Requirements */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white flex justify-between items-center"
+        className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-8 text-white"
       >
-        <div>
-          <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
-          <p className="text-indigo-100 text-lg">Broadcast your availability to farmers directly (Reverse Bidding)</p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
+            <p className="text-purple-100 text-lg">Broadcast your availability to farmers directly (Reverse Bidding)</p>
+          </div>
+          <button
+            onClick={() => setIsBroadcastModalOpen(true)}
+            className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-colors inline-flex items-center shadow-lg"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            New Broadcast
+          </button>
         </div>
-        <button
-          onClick={() => setIsBroadcastModalOpen(true)}
-          className="bg-white text-indigo-600 px-6 py-2 rounded-lg font-semibold shadow-lg hover:bg-indigo-50 transition-colors flex items-center"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          New Broadcast
-        </button>
       </motion.div>
 
       {/* If Viewing Bids for a specific Broadcast */}
@@ -294,9 +295,10 @@ const ServiceProviderDashboard = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {broadcasts.length === 0 ? (
-            <div className="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-              <Truck className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No active broadcasts. Post one to get bids!</p>
+            <div className="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+              <Truck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 mb-2">No active broadcasts. Post one to get bids!</p>
+              <button onClick={() => setIsBroadcastModalOpen(true)} className="text-purple-600 hover:underline">Post your first broadcast</button>
             </div>
           ) : (
             broadcasts.map((broadcast) => (
@@ -304,53 +306,51 @@ const ServiceProviderDashboard = () => {
                 key={broadcast._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all flex flex-col"
+                className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
-                  ${broadcast.type === 'Vehicle' ? 'bg-blue-100 text-blue-800' :
-                      broadcast.type === 'Manpower' ? 'bg-purple-100 text-purple-800' :
-                        'bg-orange-100 text-orange-800'}`}>
-                    {broadcast.type}
-                  </span>
-                  <span className={`px-2 py-1 rounded-md text-xs font-medium border
-                  ${broadcast.status === 'active' ? 'border-green-200 text-green-700 bg-green-50' : 'border-gray-200 text-gray-600'}`}>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{broadcast.title}</h3>
+                    <p className="text-sm text-gray-500">Posted on {new Date(broadcast.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${broadcast.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
                     {broadcast.status.toUpperCase()}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{broadcast.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{broadcast.description}</p>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                    {broadcast.location}
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Location:</span>
+                    <span className="font-medium text-gray-900">{broadcast.location}</span>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <CalendarIcon className="w-4 h-4 mr-2 text-gray-400" />
-                    {new Date(broadcast.availabilityDate).toLocaleDateString()}
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Target Budget:</span>
+                    <span className="font-medium text-green-600">₹{broadcast.budget}</span>
                   </div>
-                  <div className="flex items-center text-sm font-bold text-green-600">
-                    <IndianRupee className="w-4 h-4 mr-2" />
-                    {broadcast.budget} (Budget)
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Deadline:</span>
+                    <span className="font-medium text-red-600">{new Date(broadcast.availabilityDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 flex justify-between items-center mt-auto">
+                <p className="text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100 line-clamp-2">
+                  "{broadcast.description || 'No description provided.'}"
+                </p>
+
+                <div className="flex space-x-3 pt-4 border-t border-gray-100">
                   <button
                     onClick={() => handleViewBids(broadcast._id)}
-                    className="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center"
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm py-2 px-4 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center"
                   >
-                    View Bids <ArrowRight className="w-4 h-4 ml-1" />
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Bids
                   </button>
-
                   <button
                     onClick={() => handleDeleteBroadcast(broadcast._id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete Broadcast"
+                    className="px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash className="w-4 h-4" />
                   </button>
                 </div>
               </motion.div>

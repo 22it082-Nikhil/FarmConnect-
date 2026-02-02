@@ -119,12 +119,12 @@ const FarmerDashboard = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl p-8 text-white"
+        className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-8 text-white"
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
-            <p className="text-teal-100 text-lg">Browse services directly offered by providers (Reverse Bidding)</p>
+            <p className="text-primary-100 text-lg">Browse services directly offered by providers</p>
           </div>
           <div className="bg-white/20 p-3 rounded-lg backdrop-blur-sm">
             <TrendingUp className="w-8 h-8 text-white" />
