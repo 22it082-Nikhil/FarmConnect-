@@ -8,7 +8,7 @@ import {
   Settings, LogOut, Plus, FileText, Download,
   Bell, Menu, User, TrendingUp, TrendingDown,
   CheckCircle, AlertCircle, Trash,
-  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop, BarChart3, Calendar as CalendarIcon
+  ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop, BarChart3, Calendar as CalendarIcon, ShoppingBag
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
@@ -71,6 +71,24 @@ const FarmerDashboard = () => {
           console.error("Weather fetch failed", err)
         }
       })
+    }
+  }
+
+  // Sold Crops State
+  const [soldCrops, setSoldCrops] = useState<any[]>([])
+
+  const fetchSoldCrops = async () => {
+    if (!user?._id) return
+    try {
+      const res = await fetch(`${API_URL}/api/offers?farmerId=${user._id}&status=accepted`)
+      if (res.ok) {
+        const data = await res.json()
+        // Filter for crop offers only
+        const sales = data.filter((offer: any) => offer.offerType === 'crop' || offer.crop)
+        setSoldCrops(sales)
+      }
+    } catch (err) {
+      console.error("Failed to fetch sold crops", err)
     }
   }
 
@@ -287,6 +305,7 @@ const FarmerDashboard = () => {
       fetchTasks()
       fetchBuyerNeeds()
       fetchMyBids()
+      fetchSoldCrops()
     }
   }, [user])
 
@@ -2788,6 +2807,98 @@ const FarmerDashboard = () => {
     </div>
   )
 
+  /* New: Render Sold Crops Section */
+  const renderSoldCrops = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 text-white"
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">My Sold Crops</h2>
+            <p className="text-green-100 text-lg">History of your successful sales</p>
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
+            <span className="font-bold text-2xl">{soldCrops.length}</span>
+            <span className="text-sm ml-2 opacity-90">Total Sales</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {soldCrops.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-12 text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ShoppingBag className="w-10 h-10 text-green-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">No Sold Crops Yet</h3>
+          <p className="text-gray-500 max-w-md mx-auto">
+            Once you accept a bid from a buyer, it will appear here as a sold record.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {soldCrops.map((sale) => (
+            <motion.div
+              key={sale._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">
+                      {/* Try to get image from crop details if populated, else generic icon */}
+                      {sale.crop?.image ? (
+                        sale.crop.image.startsWith('data:') || sale.crop.image.startsWith('http') ?
+                          <img src={sale.crop.image} alt={sale.crop.name} className="w-full h-full object-cover rounded-lg" /> :
+                          <span className="text-2xl">{sale.crop.image}</span>
+                      ) : <Leaf className="w-6 h-6 text-green-600" />}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-lg">{sale.crop?.name || 'Crop Sale'}</h3>
+                      <p className="text-sm text-gray-500">
+                        Sold on {new Date(sale.updatedAt || sale.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide flex items-center">
+                    <CheckCircle className="w-3 h-3 mr-1" /> Sold
+                  </span>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-600">Sale Price</span>
+                    <span className="font-bold text-green-700 text-lg">{sale.bidAmount}</span>
+                  </div>
+                  <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-2">
+                    <span className="text-sm text-gray-600">Buyer</span>
+                    <span className="font-medium text-gray-900 flex items-center">
+                      <User className="w-3 h-3 mr-1 text-gray-400" />
+                      {sale.serviceProvider?.name || 'Valued Buyer'}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleStartChat(sale._id)}
+                  className="w-full py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center group"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2 text-gray-400 group-hover:text-blue-500" />
+                  Chat with Buyer
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+
   /* New: Render Offers Section */
   const renderOffers = () => (
     <div className="space-y-6">
@@ -2805,8 +2916,8 @@ const FarmerDashboard = () => {
             <Plus className="w-5 h-5 mr-2" />
             Simulate New Offer
           </button>
-        </div>
-      </motion.div>
+        </div >
+      </motion.div >
 
       <div className="space-y-4">
         {offers.map((offer) => (
@@ -2883,7 +2994,7 @@ const FarmerDashboard = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   )
 
 
@@ -3089,6 +3200,7 @@ const FarmerDashboard = () => {
       case 'overview': return renderOverview()
       case 'buyer-needs': return renderBuyerRequirements()
       case 'crops': return renderCrops()
+      case 'sold_crops': return renderSoldCrops() // Render Sold Crops
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
       case 'rentals': return renderRentals()
@@ -3189,6 +3301,7 @@ const FarmerDashboard = () => {
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
                   { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> }, // New Tab
                   { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
+                  { id: 'sold_crops', name: 'Sold Crops', icon: <ShoppingBag className="w-5 h-5" /> }, // Sold Crops Tab
                   { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
                   { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
                   { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
