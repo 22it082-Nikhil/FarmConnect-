@@ -1760,7 +1760,7 @@ const FarmerDashboard = () => {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Quantity:</span>
-                <span className="font-medium">{crop.quantity}</span>
+                <span className="font-medium">{crop.quantity} Kg</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Price:</span>
@@ -3134,7 +3134,7 @@ const FarmerDashboard = () => {
                 <div className="text-left md:text-right">
                   <p className="text-xs text-gray-500 uppercase font-semibold">Offer Price</p>
                   <p className="text-2xl font-bold text-green-600">₹{offer.pricePerUnit}/unit</p>
-                  <p className="text-xs text-gray-400">for {offer.quantityRequested}</p>
+                  <p className="text-xs text-gray-400">for {offer.quantityRequested} Kg</p>
                 </div>
 
                 <div>
@@ -3554,7 +3554,7 @@ const FarmerDashboard = () => {
                 <h3 className="text-2xl font-bold text-gray-900">Received Offers</h3>
                 <p className="text-gray-600">
                   {selectedRequestForOffers ? `For: ${selectedRequestForOffers.type} (${selectedRequestForOffers.budget || 'No Budget'})` :
-                    selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity})` :
+                    selectedCropForOffers ? `For: ${selectedCropForOffers.name} (${selectedCropForOffers.quantity} Kg)` :
                       'All Offers'}
                 </p>
               </div>
@@ -3585,7 +3585,7 @@ const FarmerDashboard = () => {
                       </div>
                       <p className="text-gray-600">Bid Amount: <span className="font-bold text-green-600">{offer.bidAmount}</span></p>
                       {offer.quantityRequested && (
-                        <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested}</span></p>
+                        <p className="text-sm text-gray-600">Quantity: <span className="font-semibold">{offer.quantityRequested} Kg</span></p>
                       )}
                       {offer.pricePerUnit && (
                         <p className="text-sm text-gray-600">Price/Unit: <span className="font-semibold">₹{offer.pricePerUnit}</span></p>
@@ -3675,7 +3675,7 @@ const FarmerDashboard = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Quantity Sold</p>
-                    <p className="font-semibold text-gray-900">{selectedSaleDetail.quantityRequested || selectedSaleDetail.crop?.quantity || 'N/A'}</p>
+                    <p className="font-semibold text-gray-900">{selectedSaleDetail.quantityRequested || selectedSaleDetail.crop?.quantity || 'N/A'} Kg</p>
                   </div>
                   {selectedSaleDetail.pricePerUnit && (
                     <div>
