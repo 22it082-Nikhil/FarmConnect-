@@ -173,18 +173,21 @@ const ServiceProviderDashboard = () => {
     if (!user?._id) return
 
     try {
+      const payload = {
+        provider: user._id,
+        ...broadcastForm,
+        // Auto-generate title since it's not in the new form
+        title: `${broadcastForm.type} Request`,
+        duration: broadcastForm.duration,
+        status: broadcastForm.status.toLowerCase(),
+        budget: parseFloat(broadcastForm.budget)
+      }
+      console.log("Sending Broadcast Payload:", payload)
+
       const res = await fetch(`${API_URL}/api/service-broadcasts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: user._id,
-          ...broadcastForm,
-          // Auto-generate title since it's not in the new form
-          title: `${broadcastForm.type} Request`,
-          duration: broadcastForm.duration,
-          status: broadcastForm.status.toLowerCase(),
-          budget: parseFloat(broadcastForm.budget)
-        })
+        body: JSON.stringify(payload)
       })
 
       if (res.ok) {
@@ -203,7 +206,9 @@ const ServiceProviderDashboard = () => {
         fetchBroadcasts()
         alert('Broadcast published successfully!')
       } else {
-        alert('Failed to publish broadcast')
+        const errData = await res.json()
+        console.error("Broadcast creation failed:", errData)
+        alert(`Failed to publish broadcast: ${errData.message || 'Unknown error'}`)
       }
     } catch (err) {
       console.error("Error creating broadcast", err)
