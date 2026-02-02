@@ -1479,7 +1479,18 @@ const ServiceProviderDashboard = () => {
   /* MY BIDS SECTION */
   const renderBids = () => {
     // Filter logic
-    const displayedBids = bids.filter(b => bidFilter === 'pending' ? b.status === 'pending' : b.status === bidFilter)
+    const displayedBids = bids.filter(b => {
+      // Base status filter
+      const statusMatch = bidFilter === 'pending' ? b.status === 'pending' : b.status === bidFilter;
+
+      // Special Case: Don't show Pending Broadcast Bids in "My Bids" (they belong in Broadcasts tab)
+      // Only show them here if they are Accepted/Rejected or Completed
+      if (b.offerType === 'broadcast_bid' && b.status === 'pending') {
+        return false;
+      }
+
+      return statusMatch;
+    })
 
     // For map view, we need to extract the service request location data
     // Only map bids that have a valid service request with location/coordinates
