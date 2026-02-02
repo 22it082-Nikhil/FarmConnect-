@@ -11,7 +11,7 @@ const Notification = require('../models/Notification');
 router.get('/', async (req, res) => {
     try {
         // console.log("GET /api/offers query:", req.query);
-        const { farmerId, providerId, buyerId, buyerNeed, status } = req.query;
+        const { farmerId, providerId, buyerId, buyerNeed, serviceBroadcast, status } = req.query;
 
         let query = {};
         if (farmerId && farmerId !== 'dummy') query.farmer = farmerId;
@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
         }
         if (buyerId) query.buyer = buyerId;
         if (buyerNeed) query.buyerNeed = buyerNeed;
+        if (serviceBroadcast) query.serviceBroadcast = serviceBroadcast;
         if (status) query.status = status;
 
         console.log("Constructed Query:", query);
